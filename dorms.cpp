@@ -8,7 +8,6 @@ struct Node {
     Node* next;
 };
 
-// Function to insert a new node at the end of the linked list
 void insertNode(Node*& head, string dormName, int capacity) {
     Node* newNode = new Node;
     newNode->dormName = dormName;
@@ -26,8 +25,7 @@ void insertNode(Node*& head, string dormName, int capacity) {
     }
 }
 
-// Function to display the linked list
-void displayList(Node* head) {
+void display(Node* head) {
     if (head == nullptr) {
         cout << "List is empty" << endl;
         return;
@@ -41,17 +39,12 @@ void displayList(Node* head) {
 }
 
 int main() {
-    // Initialize an empty linked list
     Node* head = nullptr;
-
-    // Insert dorms into the linked list
     insertNode(head, "Eden", 20);
     insertNode(head, "Ares", 10);
     insertNode(head, "Old Residence", 30);
     insertNode(head, "North Residence", 15);
-
-    // Display the linked list
-    displayList(head);
+    display(head);
 
     return 0;
 }
