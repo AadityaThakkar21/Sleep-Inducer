@@ -1,3 +1,6 @@
+modified a bit 
+Are there any errors here?
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -44,7 +47,16 @@ public:
     bool isMidnight() const {
         return (hours == 24 && minutes == 0);
     }
-
+    
+    bool operator>(const Time& other) const {
+        if (hours > other.hours) {
+            return true;
+        } else if (hours == other.hours && minutes > other.minutes) {
+            return true;
+        }
+        return false;
+    }
+    
     static Time calculateAverage(const Time* times, int size) {
         int totalMinutes = 0;
         for (int i = 0; i < size; i++) {
