@@ -75,3 +75,12 @@ void readInputData(const string& filename, vector<Inmate>& inmates, vector<Dorm>
 
     file.close();
 }
+
+// Function to assign inmates to dorms
+void assignInmatesToDorms(vector<Inmate>& inmates, vector<Dorm>& dorms) {
+    srand(time(NULL));
+    for (Inmate& inmate : inmates) {
+        int dormIndex = rand() % dorms.size();
+        dorms[dormIndex].assignedInmates.push_back(&inmate);
+    }
+}
