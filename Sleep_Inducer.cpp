@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -57,19 +58,6 @@ public:
     }
     return false;
 }
-
-    static Time calculateAverage(const Time* times, int size) {
-        int totalMinutes = 0;
-        for (int i = 0; i < size; i++) {
-            totalMinutes += times[i].hours * 60 + times[i].minutes;
-        }
-
-        int averageMinutes = totalMinutes / size;
-        int avgHours = averageMinutes / 60;
-        int avgMinutes = averageMinutes % 60;
-
-        return Time(avgHours, avgMinutes);
-    }
 };
 
 int randomInt(int min, int max) {
@@ -194,12 +182,12 @@ int main()
     }
     else {
         cout << "Sleep time will not be randomized\n";
-        cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
-        cout << "Is your File named 'inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
+        cout << "Please make sure that the file, which you are going to upload is of the name 'Inmate_records.txt'\n";
+        cout << "Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
         char fileCheck;
         cin >> fileCheck;
         if (fileCheck != 'Y' && fileCheck != 'y') {
-            cout << "Please change the name to 'inmate_records.txt' and run the program again\n";
+            cout << "Please change the name to 'Inmate_records.txt' and run the program again\n";
             return 0;
         }
     }
@@ -294,8 +282,6 @@ for (int i = 0; i < 7; i++) {
         currentTime.printTime();
         currentTime.incrementMinutes(incrementation);
     }
-
-    Time averageTime = Time::calculateAverage(times, 7);
 
     updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
