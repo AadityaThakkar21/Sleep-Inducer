@@ -22,15 +22,11 @@ public:
     }
 
     void printTime() const {
-        std::cout << "Time: ";
-        if (hours < 10) {
-            std::cout << "0";
-        }
         std::cout << hours << ":";
         if (minutes < 10) {
             std::cout << "0";
         }
-        std::cout << minutes << std::endl;
+        std::cout << minutes;
     }
 
     void incrementMinutes(int minutesToAdd) {
@@ -87,7 +83,10 @@ void generateInmateRecords(int N) {
         int musicID = randomInt(1, 9); // Music ID between 1 and 9
 
         outFile << name << " " << earpodID;
-        outFile << " " << sleepTime.printTime();
+        for (int j = 0; j < 7; ++j) { // Repeat sleep time 7 times
+            outFile << " ";
+            sleepTime.printTime();
+        }
         outFile << " " << p << " " << musicID << endl;
     }
 
@@ -119,14 +118,18 @@ void updateInmateRecords(int Finalarr[], int N) {
         int musicID;
 
         ss >> name >> earpodID;
-        ss >> hours >> minutes;
-        Time sleepTime(hours, minutes);
+        for (int i = 0; i < 7; ++i) { // Skip sleep time in the input file
+            ss >> hours >> minutes;
+        }
         ss >> p >> musicID;
 
-        // Rearrange sleep times according to Finalarr
-        // For demonstration purposes, let's just print the updated record instead of rearranging the sleep times
+        // Write updated record to output file
         outFile << name << " " << earpodID;
-        outFile << " " << sleepTime.printTime();
+        for (int i = 0; i < 7; ++i) { // Repeat sleep time 7 times in the output file
+            outFile << " ";
+            Time sleepTime(hours, minutes);
+            sleepTime.printTime();
+        }
         outFile << " " << p << " " << musicID << endl;
     }
 
@@ -141,43 +144,4 @@ int main()
     cin >> N;
     cout << "Enter number of Dorms:\n";
     cin >> M;
-    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M); // Number of people living per dorm
-
-    char UserRandomtaken;
-    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
-    cin >> UserRandomtaken;
-
-    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
-        cout << "Sleep time will be randomized\n";
-        generateInmateRecords(N);
-    }
-    else {
-        cout << "Sleep time will not be randomized\n";
-        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
-    }
-
-    ifstream MyReadFile("Inmate_records.txt");
-    string myText;
-
-    if (MyReadFile.is_open()) {
-        while (getline(MyReadFile, myText)) {
-            vector<string> tokens;
-            stringstream uuu(myText);
-            string intermediate;
-
-            while (getline(uuu, intermediate, ' ')) {
-                tokens.push_back(intermediate);
-            }
-        }
-        MyReadFile.close();
-    }
-    else {
-        cout << "Unable to open file";
-    }
-
-    int Finalarr[N];
-    generateRandomArray(Finalarr, N);
-    updateInmateRecords(Finalarr, N);
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
-    return 0;
-}
+    int Noofpeopleperdorm = ceil(static_cast<double
