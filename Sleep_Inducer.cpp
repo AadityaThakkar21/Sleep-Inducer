@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+#include <sstream>
 #include <cmath>
 using namespace std;
 
@@ -59,9 +59,97 @@ public:
     }
 };
 
+int randomInt(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+void generateRandomArray(int Finalarr[], int N) {
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 0; i < N; ++i) {
+        Finalarr[i] = randomInt(1, 100);
+    }
+}
+
+void generateInmateRecords(int N) {
+    ofstream outFile("Inmate_records.txt");
+    if (!outFile) {
+        cerr << "Error creating output file." << endl;
+        return;
+    }
+
+    string names[] = {"Rishik", "Venkat", "Suhas", "John", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
+                      "Hari", "Manav", "Madhu", "Arjun", "Ram", "Charan", "Siddharth", "Sri", "Uttam", "Kumar",
+                      "Reddy", "Aarohi", "Kriti", "Shetty", "Prabhas", "Rajamouli", "Trivikram", "Bala", "Krishna", "Vinobha",
+                      "Lohitha", "Rishi", "Niharaika", "Mahindra", "Nithin", "Aadi", "Ravi", "Soniya", "Lokesh", "Mukesh"};
+
+    int numNames = sizeof(names) / sizeof(names[0]);
+
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 0; i < N; ++i) {
+        string name = names[rand() % numNames];
+        int earpodID = randomInt(1000, 9999);
+        Time sleepTime(randomInt(21, 24), randomInt(0, 59));
+        int p = randomInt(0, 60);
+        int musicID = randomInt(1, 9);
+
+        outFile << name << " " << earpodID;
+        for (int j = 0; j < 7; ++j) {
+            outFile << " ";
+            sleepTime.printTime();
+        }
+        outFile << " " << p << " " << musicID << endl;
+    }
+
+    outFile.close();
+}
+
+void updateInmateRecords(int Finalarr[], int N) {
+    ifstream inFile("Inmate_records.txt");
+    if (!inFile) {
+        cerr << "Error opening input file." << endl;
+        return;
+    }
+
+    ofstream outFile("Inmate_records_updated.txt");
+    if (!outFile) {
+        cerr << "Error creating output file." << endl;
+        inFile.close();
+        return;
+    }
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string name;
+        int earpodID;
+        int hours, minutes;
+        int p;
+        int musicID;
+
+        ss >> name >> earpodID;
+        for (int i = 0; i < 7; ++i) {
+            ss >> hours >> minutes;
+        }
+        ss >> p >> musicID;
+
+        outFile << name << " " << earpodID;
+        for (int i = 0; i < 7; ++i) {
+            outFile << " ";
+            Time sleepTime(hours, minutes);
+            sleepTime.printTime();
+        }
+        outFile << " " << p << " " << musicID << endl;
+    }
+
+    inFile.close();
+    outFile.close();
+}
+
 int main() {
     const int N = 5; // Assuming N is 5 for this example
-    Time times[N]; // Array to store average sleep times
+    Time times[N];
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
@@ -72,7 +160,7 @@ int main() {
             stringstream ss(myText);
             string name;
             int earpodID;
-            Time sleepTimes[7]; // Array to store 7 sleep times
+            Time sleepTimes[7];
 
             ss >> name >> earpodID;
             for (int i = 0; i < 7; i++) {
@@ -82,13 +170,11 @@ int main() {
                 sleepTimes[i].set(hours, minutes);
             }
 
-            // Calculate average sleep time
             Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
             times[idx++] = avgSleepTime;
         }
         MyReadFile.close();
 
-        // Display average sleep times
         cout << "Average Sleep Times:\n";
         for (int i = 0; i < N; i++) {
             cout << "Inmate " << i + 1 << ": ";
