@@ -6,12 +6,12 @@
 
 using namespace std;
 
-// Function to extract p values from Inmate_records.txt and return the lowest one by one
-int getLowestP(int arr[], int N) {
+// Function to extract p values from Inmate_records.txt and return the array sorted in ascending order
+void extractPValues(int arr[], int N) {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
         cerr << "Error opening input file." << endl;
-        return -1; // Return -1 on error
+        return; // Exit function on error
     }
 
     string line;
@@ -39,8 +39,6 @@ int getLowestP(int arr[], int N) {
 
     // Sort the array in ascending order
     sort(arr, arr + N);
-
-    return arr[0]; // Return the lowest value
 }
 
 int main() {
@@ -49,12 +47,16 @@ int main() {
     cin >> N;
 
     int arr[N];
-    int lowestP;
 
-    // Call getLowestP in a while loop to get lowest value one by one
-    while ((lowestP = getLowestP(arr, N)) != -1) {
-        cout << "Lowest p value: " << lowestP << endl;
+    // Call extractPValues to populate and sort the array
+    extractPValues(arr, N);
+
+    // Display the sorted array
+    cout << "P values sorted in ascending order:" << endl;
+    for (int i = 0; i < N; ++i) {
+        cout << arr[i] << " ";
     }
+    cout << endl;
 
     return 0;
 }
