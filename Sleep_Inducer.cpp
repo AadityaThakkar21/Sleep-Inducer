@@ -93,6 +93,9 @@ void generateInmateRecords(int N) {
 
         outFile << name << " " << earpodID;
         for (int j = 0; j < 7; ++j) {
+            generateRandomTime(sleepTime); // Generate random sleep time
+        int p = randomInt(0, 60);
+        int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
             outFile << " ";
             sleepTime.printTime();
             cout<<" ";
