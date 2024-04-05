@@ -7,7 +7,7 @@
 using namespace std;
 
 // Function to extract p values from Inmate_records.txt and return the array sorted in ascending order
-void extractPValues(int arr[], int N) {
+void extractPValues(int arrsort[], int N) {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
         cerr << "Error opening input file." << endl;
@@ -32,13 +32,13 @@ void extractPValues(int arr[], int N) {
         }
         ss >> p >> musicID;
 
-        arr[i++] = p;
+        arrsort[i++] = p;
     }
 
     inFile.close();
 
     // Sort the array in ascending order
-    sort(arr, arr + N);
+    sort(arrsort, arrsort + N);
 }
 
 int main() {
@@ -46,15 +46,15 @@ int main() {
     cout << "Enter the number of lines to process: ";
     cin >> N;
 
-    int arr[N];
+    int arrsort[N];
 
     // Call extractPValues to populate and sort the array
-    extractPValues(arr, N);
+    extractPValues(arrsort, N);
 
     // Display the sorted array
     cout << "P values sorted in ascending order:" << endl;
     for (int i = 0; i < N; ++i) {
-        cout << arr[i] << " ";
+        cout << arrsort[i] << " ";
     }
     cout << endl;
 
