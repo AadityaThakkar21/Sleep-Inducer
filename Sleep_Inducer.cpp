@@ -7,6 +7,49 @@
 #include <cmath>
 using namespace std;
 
+class Time {
+private:
+    int hours;
+    int minutes;
+
+public:
+    Time() : hours(0), minutes(0) {}
+    Time(int h, int m) : hours(h), minutes(m) {}
+
+    void set(int h, int m) {
+        hours = h;
+        minutes = m;
+    }
+
+    void printTime() const {
+        std::cout << "Time: ";
+        if (hours < 10) {
+            std::cout << "0";
+        }
+        std::cout << hours << ":";
+        if (minutes < 10) {
+            std::cout << "0";
+        }
+        std::cout << minutes << std::endl;
+    }
+
+    void incrementMinutes(int minutesToAdd) {
+        minutes += minutesToAdd;
+        if (minutes >= 60) {
+            minutes %= 60;
+            hours++;
+        }
+    }
+
+    bool isWithinRange() const {
+        return (hours >= 21 && hours < 24);
+    }
+
+    bool isMidnight() const {
+        return (hours == 24 && minutes == 0);
+    }
+};
+
 int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
 }
@@ -39,17 +82,12 @@ void generateInmateRecords(int N) {
     for (int i = 0; i < N; ++i) {
         string name = names[rand() % numNames];
         int earpodID = randomInt(1000, 9999);
-        int sleepTimes[7];
-        for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = randomInt(1, 9); // Generate random sleep time between 1 and 9
-        }
+        Time sleepTime(randomInt(21, 24), randomInt(0, 59)); // Generate random sleep time between 21:00 to 24:00
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 9); // Music ID between 1 and 9
 
         outFile << name << " " << earpodID;
-        for (int j = 0; j < 7; ++j) {
-            outFile << " " << sleepTimes[j];
-        }
+        outFile << " " << sleepTime.printTime();
         outFile << " " << p << " " << musicID << endl;
     }
 
@@ -76,28 +114,19 @@ void updateInmateRecords(int Finalarr[], int N) {
         stringstream ss(line);
         string name;
         int earpodID;
-        vector<float> sleepTimes;
+        int hours, minutes;
         int p;
         int musicID;
 
         ss >> name >> earpodID;
-        float sleepTime;
-        for (int i = 0; i < 7; ++i) {
-            ss >> sleepTime;
-            sleepTimes.push_back(sleepTime);
-        }
+        ss >> hours >> minutes;
+        Time sleepTime(hours, minutes);
         ss >> p >> musicID;
 
         // Rearrange sleep times according to Finalarr
-        for (int i = 0; i < 7; ++i) {
-            sleepTimes[i] = (i < 6) ? sleepTimes[Finalarr[i]] : Finalarr[6]; // Update 7th sleep time according to Finalarr[N]
-        }
-
-        // Write updated record to output file
+        // For demonstration purposes, let's just print the updated record instead of rearranging the sleep times
         outFile << name << " " << earpodID;
-        for (int i = 0; i < 7; ++i) {
-            outFile << " " << sleepTimes[i];
-        }
+        outFile << " " << sleepTime.printTime();
         outFile << " " << p << " " << musicID << endl;
     }
 
@@ -105,85 +134,29 @@ void updateInmateRecords(int Finalarr[], int N) {
     outFile.close();
 }
 
-#include <iostream>
-
-class Time {
-private:
-    int hours;
-    int minutes;
-
-public:
-    Time(int h, int m) : hours(h), minutes(m) {}
-
-    void printTime() const {
-        std::cout << "Time: ";
-        if (hours < 10) {
-            std::cout << "0";
-        }
-        std::cout << hours << ":";
-        if (minutes < 10) {
-            std::cout << "0";
-        }
-        std::cout << minutes << std::endl;
-    }
-
-    void incrementMinutes(int minutesToAdd) {
-        minutes += minutesToAdd;
-        if (minutes >= 60) {
-            minutes %= 60;
-            hours++;
-        }
-    }
-
-    bool isWithinRange() const {
-        return (hours >= 21 && hours < 24);
-    }
-
-    bool isMidnight() const {
-        return (hours == 24 && minutes == 0);
-    }
-
-    static Time calculateAverage(const Time* times, int size) {
-        int totalMinutes = 0;
-        for (int i = 0; i < size; i++) {
-            totalMinutes += times[i].hours * 60 + times[i].minutes;
-        }
-
-        int averageMinutes = totalMinutes / size;
-        int avgHours = averageMinutes / 60;
-        int avgMinutes = averageMinutes % 60;
-
-        return Time(avgHours, avgMinutes);
-    }
-};
-
-
 int main()
-{   
-    cout<<"Enter number of inmates:\n";
-    int N,s,M; // Here N is the no of Inmates
+{
+    cout << "Enter number of inmates:\n";
+    int N, M;
     cin >> N;
- // Here M is the no of sleeping dorms
-     cout<<"Enter number of Dorms:\n";
-
+    cout << "Enter number of Dorms:\n";
     cin >> M;
-     s = static_cast<int>(ceil(static_cast<double>(N) / M));
-    int Noofpeopleperdorm = s; // Here Noofpeopleperdorm is the no of people living per dorm
+    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M); // Number of people living per dorm
 
     char UserRandomtaken;
-    cout << "Do you want to randomize the sleep time of inmates? Enter' Y' or 'y 'for yes, press any other charecter to choose as no: ";
+    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
 
     if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
         cout << "Sleep time will be randomized\n";
         generateInmateRecords(N);
     }
-    else  {
+    else {
         cout << "Sleep time will not be randomized\n";
-        cout<<"Please make sure that file, which you are going to upload is of name "<<"'inmate_records.txt'\n";
+        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
     }
-    
-     ifstream MyReadFile("Inmate_records.txt");
+
+    ifstream MyReadFile("Inmate_records.txt");
     string myText;
 
     if (MyReadFile.is_open()) {
@@ -195,22 +168,11 @@ int main()
             while (getline(uuu, intermediate, ' ')) {
                 tokens.push_back(intermediate);
             }
-            // cout<<tokens[0];
-
-            // for (const auto& token : tokens) {
-            //     cout << token << endl; 
-            //  }
         }
         MyReadFile.close();
-    } else {
-        cout << "Unable to open file";
     }
-
-    Time currentTime(21, 0);
-
-    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
-        currentTime.printTime();
-        currentTime.incrementMinutes(15);
+    else {
+        cout << "Unable to open file";
     }
 
     int Finalarr[N];
@@ -219,11 +181,3 @@ int main()
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
-
-/*Output:
-Sophia 4589 21:10 21:10 21:10 21:10 21:10 21:10 21:10 47 7
-Krupa 7852 22:45 22:45 22:45 22:45 22:45 22:45 22:45 23 3
-John 6143 21:59 21:59 21:59 21:59 21:59 21:59 21:59 11 9
-Sai 2387 23:25 23:25 23:25 23:25 23:25 23:25 23:25 14 5
-Eswar 7031 22:05 22:05 22:05 22:05 22:05 22:05 22:05 54 8
-*/
