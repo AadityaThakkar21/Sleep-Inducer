@@ -190,6 +190,15 @@ int main()
         cout << "Unable to open file";
     }
 
+    Time currentTime(21, 0);
+
+    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+        currentTime.printTime();
+        currentTime.incrementMinutes(15);
+    }
+
+    Time averageTime = Time::calculateAverage(times, 7);
+
     int Finalarr[N];
     generateRandomArray(Finalarr, N);
     updateInmateRecords(Finalarr, N);
