@@ -25,10 +25,9 @@ void generateInmateRecords(int N) {
     for (int i = 0; i < N; ++i) {
         string name = names[rand() % numNames];
         int earpodID = randomInt(1000, 9999);
-        float sleepTimes[7];
+        int sleepTimes[7];
         for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = static_cast<float>(randomInt(10, 90)) / 10.0; // Generate float between 1.0 to 9.0
-            sleepTimes[j] = static_cast<float>(static_cast<int>(sleepTimes[j])); // Ensure sleep time is 1.0, 2.0, ..., 9.0
+            sleepTimes[j] = randomInt(1, 9); // Generate random sleep time between 1 and 9
         }
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 9); // Music ID between 1 and 9
