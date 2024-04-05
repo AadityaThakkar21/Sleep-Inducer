@@ -84,3 +84,18 @@ void assignInmatesToDorms(vector<Inmate>& inmates, vector<Dorm>& dorms) {
         dorms[dormIndex].assignedInmates.push_back(&inmate);
     }
 }
+
+// Function to play sleep-inducing music for inmates
+void playMusic(vector<Dorm>& dorms, int p) {
+    for (Dorm& dorm : dorms) {
+        for (Inmate* inmate : dorm.assignedInmates) {
+            if (!inmate->asleep) {
+                // Assume music plays for p minutes
+                cout << "Playing music for inmate " << inmate->name << " in dorm " << dorm.name << "..." << endl;
+                sleep(p);  // Sleep for p seconds
+                cout << "Stopping music for inmate " << inmate->name << " in dorm " << dorm.name << "." << endl;
+                inmate->asleep = true;
+            }
+        }
+    }
+}
