@@ -1,18 +1,8 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
-}
-
-// Function to generate a random array of integers
-void generateRandomArray(int Finalarr[], int N) {
-    srand(static_cast<unsigned int>(time(0)));
-
-    for (int i = 0; i < N; ++i) {
-        Finalarr[i] = randomInt(1, 100); // Change 100 to the desired maximum value for the array elements
-    }
 }
 
 void generateInmateRecords(int N) {
@@ -36,7 +26,7 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         int sleepTimes[7];
         for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = randomInt(1, 9); // Generate random sleep time between 1 and 9
+            sleepTimes[j] = randomInt(10, 90) / 10; // Generate random sleep time between 1.0 and 9.0
         }
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 9); // Music ID between 1 and 9
@@ -51,7 +41,6 @@ void generateInmateRecords(int N) {
     outFile.close();
 }
 
-// Function to update the Inmate_records.txt file
 void updateInmateRecords(int Finalarr[], int N) {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
@@ -66,22 +55,13 @@ void updateInmateRecords(int Finalarr[], int N) {
         return;
     }
 
-    string line;
-    while (getline(inFile, line)) {
-        stringstream ss(line);
-        string name;
-        int earpodID;
-        vector<float> sleepTimes;
-        int p;
-        int musicID;
-
-        ss >> name >> earpodID;
-        float sleepTime;
+    string name;
+    int earpodID, sleepTimes[7], p, musicID;
+    while (inFile >> name >> earpodID) {
         for (int i = 0; i < 7; ++i) {
-            ss >> sleepTime;
-            sleepTimes.push_back(sleepTime);
+            inFile >> sleepTimes[i];
         }
-        ss >> p >> musicID;
+        inFile >> p >> musicID;
 
         // Rearrange sleep times according to Finalarr
         for (int i = 0; i < 7; ++i) {
@@ -100,56 +80,28 @@ void updateInmateRecords(int Finalarr[], int N) {
     outFile.close();
 }
 
-int main()
-{   
-    cout<<"Enter number of inmates:\n";
-    int N,s,M; // Here N is the no of Inmates
+int main() {
+    cout << "Enter number of inmates: ";
+    int N;
     cin >> N;
- // Here M is the no of sleeping dorms
-     cout<<"Enter number of Dorms:\n";
-
-    cin >> M;
-     s = static_cast<int>(ceil(static_cast<double>(N) / M));
-    int Noofpeopleperdorm = s; // Here Noofpeopleperdorm is the no of people living per dorm
 
     char UserRandomtaken;
-    cout << "Do you want to randomize the sleep time of inmates? Enter' Y' or 'y 'for yes, press any other charecter to choose as no: ";
+    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, any other character for no: ";
     cin >> UserRandomtaken;
 
     if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
         cout << "Sleep time will be randomized\n";
         generateInmateRecords(N);
-    }
-    else  {
-        cout << "Sleep time will not be randomized\n";
-        cout<<"Please make sure that file, which you are going to upload is of name "<<"'inmate_records.txt'\n";
-    }
-    
-     ifstream MyReadFile("Inmate_records.txt");
-    string myText;
-
-    if (MyReadFile.is_open()) {
-        while (getline(MyReadFile, myText)) {
-            vector<string> tokens;
-            stringstream uuu(myText);
-            string intermediate;
-
-            while (getline(uuu, intermediate, ' ')) {
-                tokens.push_back(intermediate);
-            }
-            // cout<<tokens[0];
-
-            // for (const auto& token : tokens) {
-            //     cout << token << endl; 
-            //  }
-        }
-        MyReadFile.close();
     } else {
-        cout << "Unable to open file";
+        cout << "Sleep time will not be randomized\n";
+        cout << "Please make sure that the input file 'Inmate_records.txt' is correctly formatted.\n";
     }
+
     int Finalarr[N];
-    generateRandomArray(Finalarr, N);
+    for (int i = 0; i < N; ++i) {
+        Finalarr[i] = i; // Initialize Finalarr with identity permutation initially
+    }
     updateInmateRecords(Finalarr, N);
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'.\n";
     return 0;
 }
