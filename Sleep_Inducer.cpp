@@ -2,10 +2,8 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
-
 using namespace std;
 
-// Function to generate a random int number between min and max
 int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
 }
@@ -17,7 +15,11 @@ void generateInmateRecords(int N) {
         return;
     }
 
-    string names[] = {"Rishik", "Venkat", "Sara", "John", "Emma", "Alex", "Sophia", "Daniel", "Emily", "David"};
+    string names[] = {"Rishik", "Venkat", "Sara", "John", "Emma", "Alex", "Sophia", "Daniel", "Emily", "David",
+                      "Michael", "Ethan", "Olivia", "Isabella", "James", "Alexander", "Benjamin", "Elijah", "William", "Lucas",
+                      "Matthew", "Aiden", "Mia", "Charlotte", "Abigail", "Ella", "Avery", "Scarlett", "Grace", "Amelia",
+                      "Logan", "Lucas", "Jackson", "Christopher", "Mason", "Evelyn", "Aria", "Chloe", "Liam", "Zoe"};
+
     int numNames = sizeof(names) / sizeof(names[0]);
 
     srand(static_cast<unsigned int>(time(0)));
@@ -42,22 +44,30 @@ void generateInmateRecords(int N) {
     outFile.close();
 }
 
-int main() {
-    int N;
-    cout << "Enter the number of inmate records to generate: ";
+int main()
+{
+    int N; // Here N is the Number of Inmates
     cin >> N;
 
-    generateInmateRecords(N);
+    int M; // Here M is the Number of sleeping dorms
+    cin >> M;
 
-    cout << "Inmate records generated and saved to 'Inmate_records.txt'." << endl;
+    int Noofpeopleperdorm = N / M; // Here Noofpeopleperdorm is the Number of people living per dorm
+
+    char UserRandomtaken;
+    cout << "Do you want to randomize the sleep time of inmates? Enter Y/N: ";
+    cin >> UserRandomtaken;
+
+    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
+        cout << "Sleep time will be randomized";
+        generateInmateRecords(N);
+    }
+    else if (UserRandomtaken == 'N' || UserRandomtaken == 'n') {
+        cout << "Sleep time will not be randomized";
+    }
+    else {
+        cout << "Irrelevant char entered by user";
+    }
 
     return 0;
-
 }
-
-/*Output:
-John 2549 2 4 6 7 8 3 1 24 8
-Sophia 8235 3 5 7 9 2 8 6 42 2
-Daniel 1789 1 9 2 3 7 5 4 15 7
-Emma 6193 8 6 5 4 2 9 3 35 3
-*/
