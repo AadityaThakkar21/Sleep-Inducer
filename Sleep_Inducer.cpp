@@ -9,6 +9,11 @@ float randomFloat(float min, float max) {
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
 }
 
+// Function to generate a random int number between min and max
+int randomInt(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
 int main()
 {
     int N; // Here N is the Number of Inmates
