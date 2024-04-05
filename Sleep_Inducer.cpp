@@ -170,7 +170,14 @@ int main()
     }
     else {
         cout << "Sleep time will not be randomized\n";
-        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
+        cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
+        cout << "Is your File named 'inmate_records.txt'? Y/N\n";
+        char FileConfirm;
+        cin >> FileConfirm;
+        if (FileConfirm == 'N' || FileConfirm == 'n') {
+            cout << "Please change the name to 'inmate_records.txt' and run the program again.\n";
+            return 0;
+        }
     }
 
     ifstream MyReadFile("Inmate_records.txt");
