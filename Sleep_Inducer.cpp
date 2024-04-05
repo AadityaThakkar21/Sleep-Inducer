@@ -67,7 +67,9 @@ int main()
     }
     else {
         cout << "Irrelevant char entered by user";
-    }
+        
+    generateInmateRecords(N);
 
+    cout << "Inmate records generated and saved to 'Inmate_records.txt'." << endl;
     return 0;
 }
