@@ -144,4 +144,42 @@ int main()
     cin >> N;
     cout << "Enter number of Dorms:\n";
     cin >> M;
-    int Noofpeopleperdorm = ceil(static_cast<double
+    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M); // Number of people living per dorm
+    char UserRandomtaken;
+    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+    cin >> UserRandomtaken;
+    
+    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
+        cout << "Sleep time will be randomized\n";
+        generateInmateRecords(N);
+    }
+    else {
+        cout << "Sleep time will not be randomized\n";
+        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
+    }
+
+    ifstream MyReadFile("Inmate_records.txt");
+    string myText;
+
+    if (MyReadFile.is_open()) {
+        while (getline(MyReadFile, myText)) {
+            vector<string> tokens;
+            stringstream uuu(myText);
+            string intermediate;
+    
+            while (getline(uuu, intermediate, ' ')) {
+                tokens.push_back(intermediate);
+            }
+        }
+        MyReadFile.close();
+    }   
+    else {
+        cout << "Unable to open file";
+    }
+
+int Finalarr[N];
+generateRandomArray(Finalarr, N);
+updateInmateRecords(Finalarr, N);
+cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
+return 0;
+}
