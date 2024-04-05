@@ -105,6 +105,8 @@ void updateInmateRecords(int Finalarr[], int N) {
     outFile.close();
 }
 
+#include <iostream>
+
 class Time {
 private:
     int hours;
@@ -140,7 +142,21 @@ public:
     bool isMidnight() const {
         return (hours == 24 && minutes == 0);
     }
+
+    static Time calculateAverage(const Time* times, int size) {
+        int totalMinutes = 0;
+        for (int i = 0; i < size; i++) {
+            totalMinutes += times[i].hours * 60 + times[i].minutes;
+        }
+
+        int averageMinutes = totalMinutes / size;
+        int avgHours = averageMinutes / 60;
+        int avgMinutes = averageMinutes % 60;
+
+        return Time(avgHours, avgMinutes);
+    }
 };
+
 
 int main()
 {   
