@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -154,7 +153,36 @@ int main()
     int N;
     cin >> N;
 
+
+
+    return 0;
+}
+
+
+int main()
+{
     Time times[N]; // Array to store average sleep times for each inmate
+    int Parray[N]; // Array to store P values for each inmate
+    int musicIDarray[N]; // Array to store musicID values for each inmate
+    
+    cout << "Enter number of inmates:\n";
+    int N, M;
+    cin >> N;
+    cout << "Enter number of Dorms:\n";
+    cin >> M;
+    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
+    char UserRandomtaken;
+    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+    cin >> UserRandomtaken;
+
+    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
+        cout << "Sleep time will be randomized\n";
+        generateInmateRecords(N);
+    }
+    else {
+        cout << "Sleep time will not be randomized\n";
+        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
+    }
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
@@ -176,20 +204,39 @@ int main()
             }
 
             Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
-            times[idx++] = avgSleepTime;
+            times[idx] = avgSleepTime;
+
+            // Store P and musicID values in respective arrays
+            ss >> Parray[idx] >> musicIDarray[idx];
+            idx++;
         }
         MyReadFile.close();
 
         // Now 'times' array contains the average sleep times for each inmate
+        // 'Parray' contains P values, and 'musicIDarray' contains musicID values for each inmate
         for (int i = 0; i < N; i++) {
             cout << "Average sleep time for inmate " << i + 1 << ": ";
             times[i].printTime();
-            cout << endl;
+            cout << ", P: " << Parray[i] << ", Music ID: " << musicIDarray[i] << endl;
         }
     }
     else {
         cout << "Unable to open file";
     }
 
+    
+    Time currentTime(21, 0);
+
+    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+        currentTime.printTime();
+        currentTime.incrementMinutes(15);
+    }
+    
+    Time averageTime = Time::calculateAverage(times, 7);
+
+    int Finalarr[N];
+    generateRandomArray(Finalarr, N);
+    updateInmateRecords(Finalarr, N);
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
