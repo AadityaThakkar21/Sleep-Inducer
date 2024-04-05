@@ -92,7 +92,7 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         Time sleepTime(randomInt(21, 24), randomInt(0, 59));
         int p = randomInt(0, 60);
-        int musicID = randomInt(1, 5);
+        int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
 
         outFile << name << " " << earpodID;
         for (int j = 0; j < 7; ++j) {
@@ -149,13 +149,8 @@ void updateInmateRecords(int Finalarr[], int N) {
 
 int main()
 {
-    Time times[N]; // Array to store average sleep times for each inmate
-    int Parray[N]; // Array to store P values for each inmate
-    int musicIDarray[N]; // Array to store musicID values for each inmate
-    Time Musicstop[N]; // Array to store average time + P for each inmate
-
+    int N, M, incrementation;
     cout << "Enter number of inmates:\n";
-    int N, M;
     cin >> N;
     cout << "Enter number of Dorms:\n";
     cin >> M;
@@ -171,14 +166,17 @@ int main()
     else {
         cout << "Sleep time will not be randomized\n";
         cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
-        cout << "Is your File named 'inmate_records.txt'? Y/N\n";
-        char FileConfirm;
-        cin >> FileConfirm;
-        if (FileConfirm == 'N' || FileConfirm == 'n') {
-            cout << "Please change the name to 'inmate_records.txt' and run the program again.\n";
+        cout << "Is your File named 'inmate_records.txt' ? Y/N\n";
+        char fileCheck;
+        cin >> fileCheck;
+        if (fileCheck == 'N' || fileCheck == 'n') {
+            cout << "Please change the name to 'inmate_records.txt' and run the program again\n";
             return 0;
         }
     }
+
+    cout << "How much incrementation do you want to take every cycle? Enter the value: ";
+    cin >> incrementation;
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
@@ -217,7 +215,7 @@ int main()
 
             // Calculate Musicstop by adding average time and P
             Musicstop[i] = times[i];
-            Musicstop[i].incrementMinutes(Parray[i]);
+            Musicstop[i].incrementMinutes(incrementation);
         }
     }
     else {
@@ -227,7 +225,7 @@ int main()
     Time currentTime(21, 0);
     while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
         currentTime.printTime();
-        currentTime.incrementMinutes(15);
+        currentTime.incrementMinutes(incrementation);
     }
 
     Time averageTime = Time::calculateAverage(times, 7);
