@@ -5,11 +5,6 @@
 
 using namespace std;
 
-// Function to generate a random float number between min and max
-float randomFloat(float min, float max) {
-    return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
-}
-
 // Function to generate a random int number between min and max
 int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
@@ -32,7 +27,8 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         float sleepTimes[7];
         for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = randomFloat(0.0, 9.0);  // Sleep time between 0.0 to 9.0
+            // Generate a random integer between 10 and 90 and divide by 10 to get float between 1.0 to 9.0
+            sleepTimes[j] = static_cast<float>(randomInt(10, 90)) / 10.0;
         }
         int p = randomInt(0, 60);
 
