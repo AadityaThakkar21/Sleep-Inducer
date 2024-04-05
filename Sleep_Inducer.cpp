@@ -133,20 +133,27 @@ void updateInmateRecords() {
         int musicID;
 
         ss >> name >> earpodID;
-        for (int i = 0; i < 7; ++i) {
-            ss >> hours >> minutes;
+        ss >> hours;
+            ss.ignore();
+            ss>> minutes;
+        outFile << name << " " << earpodID<<" ";
+        for (int i = 1; i < 7; ++i) {
+            ss >> hours;
+            ss.ignore();
+            ss>> minutes;
+            outFile<<hours<<":";
+            if(minutes<10){
+                outFile<<"0";
+            }
+            outFile<<minutes<<" ";
         }
         ss >> p >> musicID;
 
         Time sleepTime;
         generateRandomTime(sleepTime); // Generate random sleep time
 
-        outFile << name << " " << earpodID;
-        for (int i = 0; i < 7; ++i) {
-            outFile << " ";
-            sleepTime.printTime();
-        }
-        outFile << " " << p << " " << musicID << endl;
+        outFile<< sleepTime.hours<<":"<<sleepTime.minutes;
+        outFile  << " "<<p << " " << musicID << endl;
     }
 
     inFile.close();
