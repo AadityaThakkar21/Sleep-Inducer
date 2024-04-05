@@ -3,42 +3,20 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
 
 using namespace std;
 
-// Function to generate a random int number between min and max
-int randomInt(int min, int max) {
-    return min + rand() % (max - min + 1);
-}
-
-// Function to generate a random array of integers
-void generateRandomArray(int Finalarr[], int N) {
-    srand(static_cast<unsigned int>(time(0)));
-
-    for (int i = 0; i < N; ++i) {
-        Finalarr[i] = randomInt(1, 100); // Change 100 to the desired maximum value for the array elements
-    }
-}
-
-// Function to update the Inmate_records.txt file
-void updateInmateRecords(int Finalarr[], int N) {
+// Function to extract p values from Inmate_records.txt and return the lowest one by one
+int getLowestP(int arr[], int N) {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
         cerr << "Error opening input file." << endl;
-        return;
-    }
-
-    ofstream outFile("Inmate_records_updated.txt");
-    if (!outFile) {
-        cerr << "Error creating output file." << endl;
-        inFile.close();
-        return;
+        return -1; // Return -1 on error
     }
 
     string line;
-    while (getline(inFile, line)) {
+    int i = 0;
+    while (getline(inFile, line) && i < N) {
         stringstream ss(line);
         string name;
         int earpodID;
@@ -48,46 +26,35 @@ void updateInmateRecords(int Finalarr[], int N) {
 
         ss >> name >> earpodID;
         float sleepTime;
-        for (int i = 0; i < 7; ++i) {
+        for (int j = 0; j < 7; ++j) {
             ss >> sleepTime;
             sleepTimes.push_back(sleepTime);
         }
         ss >> p >> musicID;
 
-        // Rearrange sleep times according to Finalarr
-        for (int i = 0; i < 7; ++i) {
-            sleepTimes[i] = (i < 6) ? sleepTimes[Finalarr[i]] : Finalarr[6]; // Update 7th sleep time according to Finalarr[N]
-        }
-
-        // Write updated record to output file
-        outFile << name << " " << earpodID;
-        for (int i = 0; i < 7; ++i) {
-            outFile << " " << sleepTimes[i];
-        }
-        outFile << " " << p << " " << musicID << endl;
+        arr[i++] = p;
     }
 
     inFile.close();
-    outFile.close();
+
+    // Sort the array in ascending order
+    sort(arr, arr + N);
+
+    return arr[0]; // Return the lowest value
 }
 
 int main() {
     int N;
-    cout << "Enter the number of elements for the array: ";
+    cout << "Enter the number of lines to process: ";
     cin >> N;
 
-    int Finalarr[N];
-    generateRandomArray(Finalarr, N);
+    int arr[N];
+    int lowestP;
 
-    cout << "Random array generated with " << N << " elements:" << endl;
-    for (int i = 0; i < N; ++i) {
-        cout << Finalarr[i] << " ";
+    // Call getLowestP in a while loop to get lowest value one by one
+    while ((lowestP = getLowestP(arr, N)) != -1) {
+        cout << "Lowest p value: " << lowestP << endl;
     }
-    cout << endl;
-
-    updateInmateRecords(Finalarr, N);
-
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
 
     return 0;
 }
