@@ -42,7 +42,7 @@ public:
     }
 
     bool isWithinRange() const {
-        return (hours >= 21 && hours < 24);
+        return (hours >= 20 && hours < 24);
     }
 
     bool isMidnight() const {
@@ -64,7 +64,7 @@ int randomInt(int min, int max) {
 }
 
 void generateRandomTime(Time& sleepTime) {
-    sleepTime.set(randomInt(21, 23), randomInt(0, 59));
+    sleepTime.set(randomInt(20, 22), randomInt(0, 59));
 }
 
 void generateInmateRecords(int N) {
@@ -277,7 +277,7 @@ for (int i = 0; i < 7; i++) {
         cout << "Unable to open file";
     }
 
-        Time currentTime(21, 0);
+        Time currentTime(20, 0);
         bool musicPlaying[N] = {false}; // Array to track if music is playing for each inmate
         bool musicStopped = true; // Initialize musicStopped flag outside the loop
 
