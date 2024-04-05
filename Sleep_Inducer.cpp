@@ -147,43 +147,58 @@ void updateInmateRecords(int Finalarr[], int N) {
     outFile.close();
 }
 
-int main() {
-    const int N = 5; // Assuming N is 5 for this example
-    Time times[N];
+int main()
+{
+    cout << "Enter number of inmates:\n";
+    int N, M;
+    cin >> N;
+    cout << "Enter number of Dorms:\n";
+    cin >> M;
+    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
+    char UserRandomtaken;
+    cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+    cin >> UserRandomtaken;
+
+    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
+        cout << "Sleep time will be randomized\n";
+        generateInmateRecords(N);
+    }
+    else {
+        cout << "Sleep time will not be randomized\n";
+        cout << "Please make sure that file, which you are going to upload is of name " << "'inmate_records.txt'\n";
+    }
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
 
     if (MyReadFile.is_open()) {
-        int idx = 0;
-        while (getline(MyReadFile, myText) && idx < N) {
-            stringstream ss(myText);
-            string name;
-            int earpodID;
-            Time sleepTimes[7];
+        while (getline(MyReadFile, myText)) {
+            vector<string> tokens;
+            stringstream uuu(myText);
+            string intermediate;
 
-            ss >> name >> earpodID;
-            for (int i = 0; i < 7; i++) {
-                int hours, minutes;
-                char colon;
-                ss >> hours >> colon >> minutes;
-                sleepTimes[i].set(hours, minutes);
+            while (getline(uuu, intermediate, ' ')) {
+                tokens.push_back(intermediate);
             }
-
-            Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
-            times[idx++] = avgSleepTime;
         }
         MyReadFile.close();
-
-        cout << "Average Sleep Times:\n";
-        for (int i = 0; i < N; i++) {
-            cout << "Inmate " << i + 1 << ": ";
-            times[i].printTime();
-            cout << endl;
-        }
-    } else {
+    }
+    else {
         cout << "Unable to open file";
     }
+    
+    Time currentTime(21, 0);
 
+    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+        currentTime.printTime();
+        currentTime.incrementMinutes(15);
+    }
+    
+    Time averageTime = Time::calculateAverage(times, 7);
+
+    int Finalarr[N];
+    generateRandomArray(Finalarr, N);
+    updateInmateRecords(Finalarr, N);
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
