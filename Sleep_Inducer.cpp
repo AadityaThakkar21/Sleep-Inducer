@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+
 using namespace std;
 
 // Function to generate a random float number between min and max
@@ -31,7 +32,7 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         float sleepTimes[7];
         for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = randomFloat(0.0, 24.0);
+            sleepTimes[j] = randomFloat(0.0, 9.0);  // Sleep time between 0.0 to 9.0
         }
         int p = randomInt(0, 60);
 
@@ -45,38 +46,14 @@ void generateInmateRecords(int N) {
     outFile.close();
 }
 
-int main()
-{
-    int N; // Here N is the Number of Inmates
+int main() {
+    int N;
+    cout << "Enter the number of inmate records to generate: ";
     cin >> N;
 
-    int M; // Here M is the Number of sleeping dorms
-    cin >> M;
-
-    int Noofpeopleperdorm = N / M; // Here Noofpeopleperdorm is the Number of people living per dorm
-
-    char UserRandomtaken;
-    cout << "Do you want to randomize the sleep time of inmates? Enter Y/N: ";
-    cin >> UserRandomtaken;
-
-    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
-        cout << "Sleep time will be randomized";
-    }
-    else if (UserRandomtaken == 'N' || UserRandomtaken == 'n') {
-        cout << "Sleep time will not be randomized";
-    }
-    else {
-        cout << "Irrelevant char entered by user";
-        
     generateInmateRecords(N);
 
     cout << "Inmate records generated and saved to 'Inmate_records.txt'." << endl;
+
     return 0;
 }
-
-/*Output:
-Rishik 2938 8.0 7.0 6.5 5.5 4.0 9.0 8.0 20
-Venkat 3826 6.5 6.5 5.5 4.0 9.0 8.0 10.0 40
-Sara 1542 2.3 3.6 5.7 12.1 13.5 8.9 11.2 15
-John 7649 6.8 5.1 7.4 10.2 9.3 6.7 8.9 30
-*/
