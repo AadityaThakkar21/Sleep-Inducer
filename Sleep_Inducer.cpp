@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -146,6 +147,7 @@ void updateInmateRecords(int Finalarr[], int N) {
     inFile.close();
     outFile.close();
 }
+
 int main()
 {
     Time times[N]; // Array to store average sleep times for each inmate
