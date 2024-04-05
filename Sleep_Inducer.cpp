@@ -4,6 +4,11 @@
 #include <ctime>
 using namespace std;
 
+// Function to generate a random float number between min and max
+float randomFloat(float min, float max) {
+    return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
+}
+
 int main()
 {
     int N; // Here N is the Number of Inmates
