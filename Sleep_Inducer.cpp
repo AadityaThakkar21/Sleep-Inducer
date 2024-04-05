@@ -1,73 +1,68 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <ctime>
+#include <sstream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-int randomInt(int min, int max) {
-    return min + rand() % (max - min + 1);
-}
-
-void generateInmateRecords(int N) {
-    ofstream outFile("Inmate_records.txt");
-    if (!outFile) {
-        cerr << "Error creating output file." << endl;
+// Function to update the Inmate_records.txt file
+void updateInmateRecords(const vector<int>& Arr, int N) {
+    ifstream inFile("Inmate_records.txt");
+    if (!inFile) {
+        cerr << "Error opening input file." << endl;
         return;
     }
 
-    string names[] = {"Rishik", "Venkat", "Sara", "John", "Emma", "Alex", "Sophia", "Daniel", "Emily", "David",
-                      "Michael", "Ethan", "Olivia", "Isabella", "James", "Alexander", "Benjamin", "Elijah", "William", "Lucas",
-                      "Matthew", "Aiden", "Mia", "Charlotte", "Abigail", "Ella", "Avery", "Scarlett", "Grace", "Amelia",
-                      "Logan", "Lucas", "Jackson", "Christopher", "Mason", "Evelyn", "Aria", "Chloe", "Liam", "Zoe"};
+    ofstream outFile("Inmate_records_updated.txt");
+    if (!outFile) {
+        cerr << "Error creating output file." << endl;
+        inFile.close();
+        return;
+    }
 
-    int numNames = sizeof(names) / sizeof(names[0]);
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string name;
+        int earpodID;
+        vector<float> sleepTimes;
+        int p;
+        int musicID;
 
-    srand(static_cast<unsigned int>(time(0)));
-
-    for (int i = 0; i < N; ++i) {
-        string name = names[rand() % numNames];
-        int earpodID = randomInt(1000, 9999);
-        int sleepTimes[7];
-        for (int j = 0; j < 7; ++j) {
-            sleepTimes[j] = randomInt(1, 9); // Generate random sleep time between 1 and 9
+        ss >> name >> earpodID;
+        float sleepTime;
+        for (int i = 0; i < 7; ++i) {
+            ss >> sleepTime;
+            sleepTimes.push_back(sleepTime);
         }
-        int p = randomInt(0, 60);
-        int musicID = randomInt(1, 9); // Music ID between 1 and 9
+        ss >> p >> musicID;
 
+        // Rearrange sleep times according to Arr
+        for (int i = 0; i < 7; ++i) {
+            sleepTimes[i] = (i < 6) ? sleepTimes[Arr[i]] : Arr[6]; // Update 7th sleep time according to Arr[N]
+        }
+
+        // Write updated record to output file
         outFile << name << " " << earpodID;
-        for (int j = 0; j < 7; ++j) {
-            outFile << " " << sleepTimes[j];
+        for (int i = 0; i < 7; ++i) {
+            outFile << " " << sleepTimes[i];
         }
         outFile << " " << p << " " << musicID << endl;
     }
 
+    inFile.close();
     outFile.close();
 }
 
-int main()
-{
-    int N; // Here N is the Number of Inmates
-    cin >> N;
+int main() {
+    // Sample Arr and N for testing
+    vector<int> Arr = {3, 0, 2, 1, 5, 4, 6}; // Example Arr[]
+    int N = 4; // Number of lines to update
 
-    int M; // Here M is the Number of sleeping dorms
-    cin >> M;
+    updateInmateRecords(Arr, N);
 
-    int Noofpeopleperdorm = N / M; // Here Noofpeopleperdorm is the Number of people living per dorm
-
-    char UserRandomtaken;
-    cout << "Do you want to randomize the sleep time of inmates? Enter Y/N: ";
-    cin >> UserRandomtaken;
-
-    if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
-        cout << "Sleep time will be randomized";
-        generateInmateRecords(N);
-    }
-    else if (UserRandomtaken == 'N' || UserRandomtaken == 'n') {
-        cout << "Sleep time will not be randomized";
-    }
-    else {
-        cout << "Irrelevant char entered by user";
-    }
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
 
     return 0;
 }
