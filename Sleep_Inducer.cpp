@@ -66,3 +66,10 @@ int main() {
 
     return 0;
 }
+
+/*Output:
+John 2549 2 4 6 7 8 3 1 24 8
+Sophia 8235 3 5 7 9 2 8 6 42 2
+Daniel 1789 1 9 2 3 7 5 4 15 7
+Emma 6193 8 6 5 4 2 9 3 35 3
+*/
