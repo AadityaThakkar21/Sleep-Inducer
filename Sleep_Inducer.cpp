@@ -1,3 +1,5 @@
+User
+Ok so the current code is
 
 #include <iostream>
 #include <fstream>
@@ -20,13 +22,8 @@ public:
         hours = h;
         minutes = m;
     }
-    void check(){
-        if(hours>=24){
-            hours-=24;
-        }
-    }
+
     void printTime() const {
-        //check();
         std::cout << hours << ":";
         if (minutes < 10) {
             std::cout << "0";
@@ -58,6 +55,19 @@ public:
     }
     return false;
 }
+
+    static Time calculateAverage(const Time* times, int size) {
+        int totalMinutes = 0;
+        for (int i = 0; i < size; i++) {
+            totalMinutes += times[i].hours * 60 + times[i].minutes;
+        }
+
+        int averageMinutes = totalMinutes / size;
+        int avgHours = averageMinutes / 60;
+        int avgMinutes = averageMinutes % 60;
+
+        return Time(avgHours, avgMinutes);
+    }
 };
 
 int randomInt(int min, int max) {
@@ -65,7 +75,7 @@ int randomInt(int min, int max) {
 }
 
 void generateRandomTime(Time& sleepTime) {
-    sleepTime.set(randomInt(21, 23), randomInt(0, 59));
+    sleepTime.set(randomInt(21, 24), randomInt(0, 59));
 }
 
 void generateInmateRecords(int N) {
@@ -182,12 +192,12 @@ int main()
     }
     else {
         cout << "Sleep time will not be randomized\n";
-        cout << "Please make sure that the file, which you are going to upload is of the name 'Inmate_records.txt'\n";
-        cout << "Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
+        cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
+        cout << "Is your File named 'inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
         char fileCheck;
         cin >> fileCheck;
         if (fileCheck != 'Y' && fileCheck != 'y') {
-            cout << "Please change the name to 'Inmate_records.txt' and run the program again\n";
+            cout << "Please change the name to 'inmate_records.txt' and run the program again\n";
             return 0;
         }
     }
@@ -197,7 +207,7 @@ int main()
     cout << "The time will increment every " << incrementation << " minutes." << endl;
 
     // Read inmate records and calculate required information
-    ifstream MyReadFile("Inmate_records.txt");
+    ifstream MyReadFile("inmate_records.txt");
     string myText;
 
     if (MyReadFile.is_open()) {
@@ -213,29 +223,11 @@ int main()
 
             ss >> name >> earpodID;
             names[idx] = name;
-            
-            int totalHours = 0, totalMinutes = 0;
-            
-for (int i = 0; i < 7; i++) {
-    ss >> hours; // Read hours
-    ss.ignore(); // Ignore the column ':'
-    ss >> minutes; // Read minutes
 
-    // Check for invalid time values
-    if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
-        cerr << "Invalid time value: " << hours << ":" << minutes << endl;
-        break; // Exit the loop if the time value is invalid
-    }
-
-    totalHours += hours;
-    totalMinutes += minutes;
-}
-
-        // Calculate average time for the inmate
-    int averageHours = totalHours / 7;
-    int averageMinutes = totalMinutes / 7;
-
-    times[idx].set(averageHours, averageMinutes);
+            for (int i = 0; i < 7; i++) {
+                ss >> hours >> minutes;
+                times[idx].set(hours, minutes);
+            }
 
             ss >> p >> musicID;
             Parray[idx] = p;
@@ -243,8 +235,7 @@ for (int i = 0; i < 7; i++) {
 
             // Calculate Musicstop by adding average time and P
             Musicstop[idx] = times[idx];
-            Musicstop[idx].incrementMinutes(Parray[idx]);
-
+            Musicstop[idx].incrementMinutes(incrementation);
 
             idx++;
         }
@@ -261,14 +252,12 @@ for (int i = 0; i < 7; i++) {
 
         cout << "Time taken by each inmate to fall asleep are:" << endl;
         for (int i = 0; i < N; i++) {
-            cout << names[i] << ": " << Parray[i] << " minutes" << endl;
+            cout << names[i] << ": " << times[i].hours * 60 + times[i].minutes << " minutes" << endl;
         }
 
         cout << "Music for each inmate will Automatically stop at:" << endl;
         for (int i = 0; i < N; i++) {
             cout << names[i] << ": ";
-            Musicstop[i].check();
-            
             Musicstop[i].printTime();
             cout << endl;
         }
@@ -282,6 +271,8 @@ for (int i = 0; i < 7; i++) {
         currentTime.printTime();
         currentTime.incrementMinutes(incrementation);
     }
+
+    Time averageTime = Time::calculateAverage(times, 7);
 
     updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
