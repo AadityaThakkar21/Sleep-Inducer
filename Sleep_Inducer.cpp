@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -93,7 +92,7 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         Time sleepTime(randomInt(21, 24), randomInt(0, 59));
         int p = randomInt(0, 60);
-        int musicID = randomInt(1, 9);
+        int musicID = randomInt(1, 5);
 
         outFile << name << " " << earpodID;
         for (int j = 0; j < 7; ++j) {
