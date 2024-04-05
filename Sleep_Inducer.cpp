@@ -31,13 +31,13 @@ void generateInmateRecords(int N) {
             sleepTimes[j] = static_cast<float>(randomInt(10, 90)) / 10.0;
         }
         int p = randomInt(0, 60);
-        int musicLevel = randomInt(1, 9); // Music level between 1 and 9
+        int musicID = randomInt(1, 9); // Music ID between 1 and 9
 
         outFile << name << " " << earpodID;
         for (int j = 0; j < 7; ++j) {
             outFile << " " << sleepTimes[j];
         }
-        outFile << " " << p << " " << musicLevel << endl;
+        outFile << " " << p << " " << musicID << endl;
     }
 
     outFile.close();
