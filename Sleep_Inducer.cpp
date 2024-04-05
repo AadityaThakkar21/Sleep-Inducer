@@ -1,6 +1,3 @@
-modified a bit 
-Are there any errors here?
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -193,46 +190,51 @@ int main()
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
 
-    if (MyReadFile.is_open()) {
-        int idx = 0;
-        while (getline(MyReadFile, myText) && idx < N) {
-            stringstream ss(myText);
-            string name;
-            int earpodID;
-            Time sleepTimes[7]; // Array to store sleep times for each inmate
+ifstream MyReadFile("Inmate_records.txt");
+string myText;
+string inmateNames[N]; // Array to store inmate names
 
-            ss >> name >> earpodID;
-            for (int i = 0; i < 7; i++) {
-                int hours, minutes;
-                char colon;
-                ss >> hours >> colon >> minutes;
-                sleepTimes[i].set(hours, minutes);
-            }
+if (MyReadFile.is_open()) {
+    int idx = 0;
+    while (getline(MyReadFile, myText) && idx < N) {
+        stringstream ss(myText);
+        string name;
+        int earpodID;
+        Time sleepTimes[7]; // Array to store sleep times for each inmate
 
-            Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
-            times[idx] = avgSleepTime;
-
-            // Store P and musicID values in respective arrays
-            ss >> Parray[idx] >> musicIDarray[idx];
-            idx++;
+        ss >> name >> earpodID;
+        inmateNames[idx] = name; // Store the inmate name in the array
+        for (int i = 0; i < 7; i++) {
+            int hours, minutes;
+            char colon;
+            ss >> hours >> colon >> minutes;
+            sleepTimes[i].set(hours, minutes);
         }
-        MyReadFile.close();
 
-        // Now 'times' array contains the average sleep times for each inmate
-        // 'Parray' contains P values, and 'musicIDarray' contains musicID values for each inmate
-        for (int i = 0; i < N; i++) {
-            cout << "Average sleep time for inmate " << i + 1 << ": ";
-            times[i].printTime();
-            cout << ", P: " << Parray[i] << ", Music ID: " << musicIDarray[i] << endl;
+        Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
+        times[idx] = avgSleepTime;
 
-            // Calculate Musicstop by adding average time and P
-            Musicstop[i] = times[i];
-            Musicstop[i].incrementMinutes(incrementation);
-        }
+        // Store P and musicID values in respective arrays
+        ss >> Parray[idx] >> musicIDarray[idx];
+        idx++;
     }
-    else {
-        cout << "Unable to open file";
+    MyReadFile.close();
+
+    // Now 'times' array contains the average sleep times for each inmate
+    // 'Parray' contains P values, and 'musicIDarray' contains musicID values for each inmate
+    for (int i = 0; i < N; i++) {
+        cout << "Average sleep time for inmate " << inmateNames[i] << ": ";
+        times[i].printTime();
+        cout << ", P: " << Parray[i] << ", Music ID: " << musicIDarray[i] << endl;
+
+        // Calculate Musicstop by adding average time and P
+        Musicstop[i] = times[i];
+        Musicstop[i].incrementMinutes(incrementation);
     }
+}
+else {
+    cout << "Unable to open file";
+}
 
     Time currentTime(21, 0);
     while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
