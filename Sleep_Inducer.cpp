@@ -1,75 +1,35 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
-// Function to update the Inmate_records.txt file
-void updateInmateRecords(const vector<int>& Arr, int N) {
-    ifstream inFile("Inmate_records.txt");
-    if (!inFile) {
-        cerr << "Error opening input file." << endl;
-        return;
+// Function to generate a random int number between min and max
+int randomInt(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+void generateRandomArray(int Finalarr[], int N) {
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 0; i < N; ++i) {
+        Finalarr[i] = randomInt(1, 100); // Change 100 to the desired maximum value for the array elements
     }
-
-    ofstream outFile("Inmate_records_updated.txt");
-    if (!outFile) {
-        cerr << "Error creating output file." << endl;
-        inFile.close();
-        return;
-    }
-
-    string line;
-    while (getline(inFile, line)) {
-        stringstream ss(line);
-        string name;
-        int earpodID;
-        vector<float> sleepTimes;
-        int p;
-        int musicID;
-
-        ss >> name >> earpodID;
-        float sleepTime;
-        for (int i = 0; i < 7; ++i) {
-            ss >> sleepTime;
-            sleepTimes.push_back(sleepTime);
-        }
-        ss >> p >> musicID;
-
-        // Rearrange sleep times according to Arr
-        for (int i = 0; i < 7; ++i) {
-            sleepTimes[i] = (i < 6) ? sleepTimes[Arr[i]] : Arr[6]; // Update 7th sleep time according to Arr[N]
-        }
-
-        // Write updated record to output file
-        outFile << name << " " << earpodID;
-        for (int i = 0; i < 7; ++i) {
-            outFile << " " << sleepTimes[i];
-        }
-        outFile << " " << p << " " << musicID << endl;
-    }
-
-    inFile.close();
-    outFile.close();
 }
 
 int main() {
-    // Sample Arr and N for testing
-    vector<int> Arr = {3, 0, 2, 1, 5, 4, 6}; // Example Arr[]
-    int N = 4; // Number of lines to update
+    int N;
+    cout << "Enter the number of elements for the array: ";
+    cin >> N;
 
-    updateInmateRecords(Arr, N);
+    int Finalarr[N];
+    generateRandomArray(Finalarr, N);
 
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
+    cout << "Random array generated with " << N << " elements:" << endl;
+    for (int i = 0; i < N; ++i) {
+        cout << Finalarr[i] << " ";
+    }
+    cout << endl;
 
     return 0;
 }
-
-/*Output:
-John 2549 2 4 6 7 8 3 1 24 8
-Sophia 8235 3 5 7 9 2 8 6 42 2
-Daniel 1789 1 9 2 3 7 5 4 15 7
-Emma 6193 8 6 5 4 2 9 3 35 3
-*/
