@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -156,12 +155,15 @@ void updateInmateRecords() {
     outFile.close();
 }
 
+
 int main()
 {
-    int N;
+    int N, M, incrementation;
     cout << "Enter number of inmates:\n";
     cin >> N;
-
+    cout << "Enter number of Dorms:\n";
+    cin >> M;
+    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
@@ -173,7 +175,17 @@ int main()
     else {
         cout << "Sleep time will not be randomized\n";
         cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
+        cout << "Is your File named 'inmate_records.txt' ? Y/N\n";
+        char fileCheck;
+        cin >> fileCheck;
+        if (fileCheck == 'N' || fileCheck == 'n') {
+            cout << "Please change the name to 'inmate_records.txt' and run the program again\n";
+            return 0;
+        }
     }
+
+    cout << "How much incrementation do you want to take every cycle? Enter the value: ";
+    cin >> incrementation;
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
@@ -229,7 +241,7 @@ int main()
 
     Time averageTime = Time::calculateAverage(times, 7);
 
-    updateInmateRecords();
+    updateInmateRecords(Finalarr, N);
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
