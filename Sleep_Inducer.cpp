@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <sstream>
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
@@ -34,37 +33,34 @@ void readInputData(const string& filename, vector<Inmate>& inmates, vector<Dorm>
         exit(1);
     }
 
-    string line;
-    while (getline(file, line)) {
-        stringstream ss(line);
-        string type;
-        ss >> type;
+    string type;
+    while (file >> type) {
         if (type == "Inmate") {
             Inmate inmate;
-            ss >> inmate.name >> inmate.earpodID >> inmate.fallAsleepTime;
+            file >> inmate.name >> inmate.earpodID >> inmate.fallAsleepTime;
             for (int i = 0; i < 7; ++i) {
                 int sleepTime;
-                ss >> sleepTime;
+                file >> sleepTime;
                 inmate.sleepTime.push_back(sleepTime);
             }
             inmates.push_back(inmate);
         } else if (type == "Dorm") {
             Dorm dorm;
-            ss >> dorm.name;
+            file >> dorm.name;
             int numChannels;
-            ss >> numChannels;
+            file >> numChannels;
             for (int i = 0; i < numChannels; ++i) {
                 int channel;
-                ss >> channel;
+                file >> channel;
                 dorm.musicChannels.push_back(channel);
             }
             for (int i = 0; i < numChannels; ++i) {
                 vector<int> playlist;
                 int numSongs;
-                ss >> numSongs;
+                file >> numSongs;
                 for (int j = 0; j < numSongs; ++j) {
                     int songID;
-                    ss >> songID;
+                    file >> songID;
                     playlist.push_back(songID);
                 }
                 dorm.musicPlaylist.push_back(playlist);
