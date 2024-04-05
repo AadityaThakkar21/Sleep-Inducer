@@ -73,3 +73,10 @@ int main()
     cout << "Inmate records generated and saved to 'Inmate_records.txt'." << endl;
     return 0;
 }
+
+/*Output:
+Rishik 2938 8.0 7.0 6.5 5.5 4.0 9.0 8.0 20
+Venkat 3826 6.5 6.5 5.5 4.0 9.0 8.0 10.0 40
+Sara 1542 2.3 3.6 5.7 12.1 13.5 8.9 11.2 15
+John 7649 6.8 5.1 7.4 10.2 9.3 6.7 8.9 30
+*/
