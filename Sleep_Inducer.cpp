@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -44,7 +45,7 @@ public:
     bool isMidnight() const {
         return (hours == 24 && minutes == 0);
     }
-    
+
     bool operator>(const Time& other) const {
         if (hours > other.hours) {
             return true;
@@ -53,7 +54,7 @@ public:
         }
         return false;
     }
-    
+
     static Time calculateAverage(const Time* times, int size) {
         int totalMinutes = 0;
         for (int i = 0; i < size; i++) {
@@ -72,12 +73,8 @@ int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 
-void generateRandomArray(int Finalarr[], int N) {
-    srand(static_cast<unsigned int>(time(0)));
-
-    for (int i = 0; i < N; ++i) {
-        Finalarr[i] = randomInt(1, 100);
-    }
+void generateRandomTime(Time& sleepTime) {
+    sleepTime.set(randomInt(21, 24), randomInt(0, 59));
 }
 
 void generateInmateRecords(int N) {
@@ -99,7 +96,8 @@ void generateInmateRecords(int N) {
     for (int i = 0; i < N; ++i) {
         string name = names[rand() % numNames];
         int earpodID = randomInt(1000, 9999);
-        Time sleepTime(randomInt(21, 24), randomInt(0, 59));
+        Time sleepTime;
+        generateRandomTime(sleepTime); // Generate random sleep time
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
 
@@ -114,7 +112,7 @@ void generateInmateRecords(int N) {
     outFile.close();
 }
 
-void updateInmateRecords(int Finalarr[], int N) {
+void updateInmateRecords() {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
         cerr << "Error opening input file." << endl;
@@ -143,10 +141,12 @@ void updateInmateRecords(int Finalarr[], int N) {
         }
         ss >> p >> musicID;
 
+        Time sleepTime;
+        generateRandomTime(sleepTime); // Generate random sleep time
+
         outFile << name << " " << earpodID;
         for (int i = 0; i < 7; ++i) {
             outFile << " ";
-            Time sleepTime(hours, minutes);
             sleepTime.printTime();
         }
         outFile << " " << p << " " << musicID << endl;
@@ -158,12 +158,10 @@ void updateInmateRecords(int Finalarr[], int N) {
 
 int main()
 {
-    int N, M, incrementation;
+    int N;
     cout << "Enter number of inmates:\n";
     cin >> N;
-    cout << "Enter number of Dorms:\n";
-    cin >> M;
-    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
+
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
@@ -175,66 +173,53 @@ int main()
     else {
         cout << "Sleep time will not be randomized\n";
         cout << "Please make sure that the file, which you are going to upload is of the name 'inmate_records.txt'\n";
-        cout << "Is your File named 'inmate_records.txt' ? Y/N\n";
-        char fileCheck;
-        cin >> fileCheck;
-        if (fileCheck == 'N' || fileCheck == 'n') {
-            cout << "Please change the name to 'inmate_records.txt' and run the program again\n";
-            return 0;
-        }
     }
-
-    cout << "How much incrementation do you want to take every cycle? Enter the value: ";
-    cin >> incrementation;
 
     ifstream MyReadFile("Inmate_records.txt");
     string myText;
+    string inmateNames[N]; // Array to store inmate names
 
-ifstream MyReadFile("Inmate_records.txt");
-string myText;
-string inmateNames[N]; // Array to store inmate names
+    if (MyReadFile.is_open()) {
+        int idx = 0;
+        while (getline(MyReadFile, myText) && idx < N) {
+            stringstream ss(myText);
+            string name;
+            int earpodID;
+            Time sleepTimes[7]; // Array to store sleep times for each inmate
 
-if (MyReadFile.is_open()) {
-    int idx = 0;
-    while (getline(MyReadFile, myText) && idx < N) {
-        stringstream ss(myText);
-        string name;
-        int earpodID;
-        Time sleepTimes[7]; // Array to store sleep times for each inmate
+            ss >> name >> earpodID;
+            inmateNames[idx] = name; // Store the inmate name in the array
+            for (int i = 0; i < 7; i++) {
+                int hours, minutes;
+                char colon;
+                ss >> hours >> colon >> minutes;
+                sleepTimes[i].set(hours, minutes);
+            }
 
-        ss >> name >> earpodID;
-        inmateNames[idx] = name; // Store the inmate name in the array
-        for (int i = 0; i < 7; i++) {
-            int hours, minutes;
-            char colon;
-            ss >> hours >> colon >> minutes;
-            sleepTimes[i].set(hours, minutes);
+            Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
+            times[idx] = avgSleepTime;
+
+            // Store P and musicID values in respective arrays
+            ss >> Parray[idx] >> musicIDarray[idx];
+            idx++;
         }
+        MyReadFile.close();
 
-        Time avgSleepTime = Time::calculateAverage(sleepTimes, 7);
-        times[idx] = avgSleepTime;
+        // Now 'times' array contains the average sleep times for each inmate
+        // 'Parray' contains P values, and 'musicIDarray' contains musicID values for each inmate
+        for (int i = 0; i < N; i++) {
+            cout << "Average sleep time for inmate " << inmateNames[i] << ": ";
+            times[i].printTime();
+            cout << ", P: " << Parray[i] << ", Music ID: " << musicIDarray[i] << endl;
 
-        // Store P and musicID values in respective arrays
-        ss >> Parray[idx] >> musicIDarray[idx];
-        idx++;
+            // Calculate Musicstop by adding average time and P
+            Musicstop[i] = times[i];
+            Musicstop[i].incrementMinutes(incrementation);
+        }
     }
-    MyReadFile.close();
-
-    // Now 'times' array contains the average sleep times for each inmate
-    // 'Parray' contains P values, and 'musicIDarray' contains musicID values for each inmate
-    for (int i = 0; i < N; i++) {
-        cout << "Average sleep time for inmate " << inmateNames[i] << ": ";
-        times[i].printTime();
-        cout << ", P: " << Parray[i] << ", Music ID: " << musicIDarray[i] << endl;
-
-        // Calculate Musicstop by adding average time and P
-        Musicstop[i] = times[i];
-        Musicstop[i].incrementMinutes(incrementation);
+    else {
+        cout << "Unable to open file";
     }
-}
-else {
-    cout << "Unable to open file";
-}
 
     Time currentTime(21, 0);
     while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
@@ -244,9 +229,7 @@ else {
 
     Time averageTime = Time::calculateAverage(times, 7);
 
-    int Finalarr[N];
-    generateRandomArray(Finalarr, N);
-    updateInmateRecords(Finalarr, N);
+    updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
