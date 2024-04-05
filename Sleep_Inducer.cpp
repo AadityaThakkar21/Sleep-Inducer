@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath> // Include cmath for rounding functions
 
 using namespace std;
 
@@ -28,7 +29,8 @@ void generateInmateRecords(int N) {
         float sleepTimes[7];
         for (int j = 0; j < 7; ++j) {
             // Generate a random integer between 10 and 90 and divide by 10 to get float between 1.0 to 9.0
-            sleepTimes[j] = static_cast<float>(randomInt(10, 90)) / 10.0;
+            float rawSleepTime = static_cast<float>(randomInt(10, 90)) / 10.0;
+            sleepTimes[j] = round(rawSleepTime); // Round off the sleep time to the nearest whole number
         }
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 9); // Music ID between 1 and 9
@@ -54,10 +56,3 @@ int main() {
 
     return 0;
 }
-
-/*Output:
-Sara 5284 6.7 2.5 4.2 1.3 9.0 7.1 8.4 18 4
-Daniel 7413 1.2 4.7 6.8 5.1 2.3 8.9 3.6 25 7
-David 3826 3.5 2.8 7.4 8.9 1.6 5.3 4.7 35 6
-Sophia 9201 9.0 1.7 3.4 6.9 5.2 7.8 8.1 42 8
-*/
