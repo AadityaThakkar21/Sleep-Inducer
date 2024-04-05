@@ -44,6 +44,19 @@ public:
     bool isMidnight() const {
         return (hours == 24 && minutes == 0);
     }
+
+    static Time calculateAverage(const Time* times, int size) {
+        int totalMinutes = 0;
+        for (int i = 0; i < size; i++) {
+            totalMinutes += times[i].hours * 60 + times[i].minutes;
+        }
+
+        int averageMinutes = totalMinutes / size;
+        int avgHours = averageMinutes / 60;
+        int avgMinutes = averageMinutes % 60;
+
+        return Time(avgHours, avgMinutes);
+    }
 };
 
 int randomInt(int min, int max) {
@@ -148,7 +161,7 @@ int main()
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
-    
+
     if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
         cout << "Sleep time will be randomized\n";
         generateInmateRecords(N);
@@ -166,20 +179,20 @@ int main()
             vector<string> tokens;
             stringstream uuu(myText);
             string intermediate;
-    
+
             while (getline(uuu, intermediate, ' ')) {
                 tokens.push_back(intermediate);
             }
         }
         MyReadFile.close();
-    }   
+    }
     else {
         cout << "Unable to open file";
     }
 
-int Finalarr[N];
-generateRandomArray(Finalarr, N);
-updateInmateRecords(Finalarr, N);
-cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
-return 0;
+    int Finalarr[N];
+    generateRandomArray(Finalarr, N);
+    updateInmateRecords(Finalarr, N);
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
+    return 0;
 }
