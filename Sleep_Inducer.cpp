@@ -99,3 +99,20 @@ void playMusic(vector<Dorm>& dorms, int p) {
         }
     }
 }
+
+int main() {
+    vector<Inmate> inmates;
+    vector<Dorm> dorms;
+
+    // Read input data from file
+    readInputData("input.txt", inmates, dorms);
+
+    // Assign inmates to dorms
+    assignInmatesToDorms(inmates, dorms);
+
+    // Play sleep-inducing music
+    int p = 5;  // Assuming music plays for 5 minutes
+    playMusic(dorms, p);
+
+    return 0;
+}
