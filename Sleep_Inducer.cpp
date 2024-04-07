@@ -601,32 +601,6 @@ bool musicStopped[N] = {true};
 Time currentTime(20, 0);
 Time PrevTime(19, 30);
 
-    // while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
-    //     cout << "\nCurrently the time is:";
-    //     currentTime.printTime();
-    //     cout << endl;
-
-    //     bool musicCurrentlyPlaying = false; // Flag to track if music is currently playing
-
-    //     // Free channels if no EarpodID is using them
-    //     for (int dorm = 0; dorm < M; dorm++) {
-    //         for (int person = 0; person < peopleperdorm; person++) {
-    //             if (ChannelID[dorm][person] != -1) {
-    //                 // Check if EarpodID is still using the channel, if not free the channel
-    //                 bool earpodIDUsingChannel = false;
-    //                 for (int i = 0; i < N; i++) {
-    //                     if (ChannelID[dorm][person] == i) {
-    //                         earpodIDUsingChannel = true;
-    //                         break;
-    //                     }
-    //                 }
-    //                 if (!earpodIDUsingChannel) {
-    //                     cout << "Music Channel " << ChannelID[dorm][person] + 10 << " has become free." << endl;
-    //                     ChannelID[dorm][person] = -1; // Clear the channel allocation
-    //                 }
-    //             }
-    //         }
-        // }
 while (currentTime.isWithinRange() && !(currentTime.hours == 23 && currentTime.minutes == 30)) {
     cout << "\nCurrently the time is: ";
     currentTime.printTime();
