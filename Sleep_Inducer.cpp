@@ -435,6 +435,7 @@ int main() {
             }
         }
         }
+    }
 
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
