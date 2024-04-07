@@ -26,9 +26,9 @@ public:
     }
     void printTime() const {
         //check();
-        cout << hours << ":";
+        std::cout << hours << ":";
         if (minutes < 10) {
-            cout << "0";
+            std::cout << "0";
         }
         std::cout << minutes;
     }
@@ -93,9 +93,6 @@ void generateInmateRecords(int N) {
 
         outFile << name << " " << earpodID;
         for (int j = 0; j < 7; ++j) {
-            generateRandomTime(sleepTime); // Generate random sleep time
-        int p = randomInt(0, 60);
-        int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
             outFile << " ";
             sleepTime.printTime();
             cout<<" ";
@@ -127,7 +124,6 @@ void updateInmateRecords() {
     }
 
     string line;
-    int x;
     while (getline(inFile, line)) {
         stringstream ss(line);
         string name;
@@ -139,15 +135,12 @@ void updateInmateRecords() {
         ss >> name >> earpodID;
         ss >> hours;
             ss.ignore();
-            x=hours*60;
             ss>> minutes;
-            x+=minutes;
         outFile << name << " " << earpodID<<" ";
         for (int i = 1; i < 7; ++i) {
             ss >> hours;
             ss.ignore();
             ss>> minutes;
-            x+=hours*60+minutes;
             outFile<<hours<<":";
             if(minutes<10){
                 outFile<<"0";
@@ -174,11 +167,11 @@ int main()
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
-    cin.ignore();
+
     cout << "Enter number of Dorms:\n";
     cin >> M;
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
-    cin.ignore();    
+    
     string names[N];
     Time times[N]; // Array to store average sleep times for each inmate
     int Parray[N]; // Array to store P values for each inmate
@@ -189,7 +182,7 @@ int main()
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
-    cin.ignore();
+
     if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
         cout << "Sleep time will be randomized\n";
         generateInmateRecords(N);
@@ -200,7 +193,6 @@ int main()
         cout << "Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
         char fileCheck;
         cin >> fileCheck;
-            cin.ignore();
         if (fileCheck != 'Y' && fileCheck != 'y') {
             cout << "Please change the name to 'Inmate_records.txt' and run the program again\n";
             return 0;
@@ -209,7 +201,6 @@ int main()
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
-        cin.ignore();
     cout << "The time will increment every " << incrementation << " minutes." << endl;
 
     // Read inmate records and calculate required information
@@ -239,7 +230,7 @@ for (int i = 0; i < 7; i++) {
 
     // Check for invalid time values
     if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
-        cout << "Invalid time value: " << hours << ":" << minutes << endl;
+        cerr << "Invalid time value: " << hours << ":" << minutes << endl;
         break; // Exit the loop if the time value is invalid
     }
 
