@@ -234,7 +234,7 @@ int main()
     int musicIDs[] = {3, 1, 2, 4, 2, 3, 1, 4, 3, 2,
                       1, 4, 2, 3, 1, 2, 3, 4, 1, 2,
                       3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
-                      1, 2, 3, 4, 1, 2, 3, 4, 1, 2}; // Example music IDs associated with each student
+                      1, 2, 3, 4, 1, 2, 3, 4, 1, 2}; 
 
     string studentNames_updated[N];
     int musicIDs_updated[N];
@@ -349,7 +349,7 @@ int main()
         }
     }
     
-    char UserDormtaken;
+/*    char UserDormtaken;
 cout << "Do you want to randomize the Dorms of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
 cin >> UserDormtaken;
 cin.ignore();
@@ -368,7 +368,7 @@ else {
         cout << "Please change the name to 'Dorm_records.txt' and run the program again\n";
         return 0;
     }
-}
+}*/
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
