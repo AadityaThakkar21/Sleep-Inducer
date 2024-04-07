@@ -75,7 +75,7 @@ void generateInmateRecords(int N) {
         return;
     }
 
-    string names[] = {"Rishik", "Venkat", "Suhas", "John", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
+    string names[] = {"Rishik", "Venkat", "Aaditya", "Vraj", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
                       "Hari", "Manav", "Madhu", "Arjun", "Ram", "Charan", "Siddharth", "Sri", "Uttam", "Kumar",
                       "Reddy", "Aarohi", "Kriti", "Shetty", "Prabhas", "Rajamouli", "Trivikram", "Bala", "Krishna", "Vinobha",
                       "Lohitha", "Rishi", "Niharaika", "Mahindra", "Nithin", "Aadi", "Ravi", "Soniya", "Lokesh", "Mukesh"};
