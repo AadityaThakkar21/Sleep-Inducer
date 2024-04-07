@@ -13,7 +13,14 @@ using std::left;
 
 const int MAX_DORMS = 100;
 const int MAX_INMATES_PER_DORM = 100;
+struct ChannelControl {
+    bool occupied;
+    int dormIndex;
+    int musicID;
+    vector<int> earpodID;
 
+    ChannelControl() : occupied(false), dormIndex(-1), musicID(-1) {}
+};
 class Time {
 public:
     int hours;
@@ -308,6 +315,8 @@ int main() {
     int N, M, incrementation, peopleperdorm, numberofchannels;
   vector<string> DormName;
     vector<int> ChannelIDrecord;
+    int BackupChannels;
+    int *BackupEarpodID;
     
     int Channelsize = ChannelIDrecord.size();
     vector<vector<int>> ChannelID(Channelsize, vector<int>(peopleperdorm));
@@ -353,8 +362,7 @@ int main() {
     cout << "You have set " << numberofchannels << " channels." << endl;
     cin.ignore();
     
-    int BackupChannels;
-    int BackupEarpodID[];
+  
     string names[N];
     Time times[N];
     int Parray[N];
@@ -645,6 +653,7 @@ int RemainingNoofpeopleperdorm = N % M;
         Musicstop[i].printTime();
         cout << endl;
     }
+    struct ChannelControl channels[numberofchannels];
 
 bool musicPlaying[N] = {false};
 bool musicStopped[N] = {true};
@@ -677,56 +686,81 @@ Time PrevTime(19, 30);
     //             }
     //         }
         // }
-          while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
-        cout << "\nCurrently the time is:";
-                    currentTime.printTime();
-int check=0;
-        cout << endl;
+while (currentTime.isWithinRange() && !(currentTime.hours == 23 && currentTime.minutes == 30)) {
+    cout << "\nCurrently the time is: ";
+    currentTime.printTime();
+    cout << endl;
 
-        // musicStopped = true;
+    bool musicStopped = true;
 
-        for (int i = 0; i < N; i++) {
-            
-            
-            if ((musicPlaying[i]) &&( currentTime >= Musicstop[i]) ) {
-                cout << "Music has stopped playing for " <<setw(10)<< names[i] << " at ";
-                Musicstop[i].printTime();
-                cout << endl;
-                musicPlaying[i] = false;
-                musicStopped[i] = true;
-            }
-            
-            if (!musicPlaying[i]) {
-                musicStopped[i] = false;
-            }
-            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
-                cout<<right;
-                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
-                times[i].printTime();
-                cout << endl;
-                musicPlaying[i] = true;
-                musicStopped[i] = false;
-            }
-            else if(musicPlaying[i]&& (Musicstop[i]>=currentTime)) {
-                cout << "Music is currently playing for " <<setw(9)<< names[i] << endl;
-            }
-        }
-        for(int i=0;i<N;i++){
-            if(musicStopped[i]){
-                check++;
-            }
-        }
+    for (int i = 0; i < N; i++) {
+        if (musicPlaying[i] && currentTime >= Musicstop[i]) {
+            cout << "Music has stopped playing for " << setw(10) << names[i] << " at ";
+            Musicstop[i].printTime();
+            cout << endl;
+            musicPlaying[i] = false;
 
-                if (check==N) {
-                   cout << "Music is not being played for anyone right now" << endl;
+            // Free the channel
+            for (int j = 0; j < numberofchannels; j++) {
+                if (channels[j].occupied && channels[j].earpodID.size() > 0) {
+                    for (int k = 0; k < channels[j].earpodID.size(); k++) {
+                        if (channels[j].earpodID[k] == Records[i].EarpodID) {
+                            channels[j].earpodID.erase(channels[j].earpodID.begin() + k);
+                            if (channels[j].earpodID.empty()) {
+                                channels[j].occupied = false;
+                                cout << "Music Channel " << j + 10 << " has become free." << endl;
+                            }
+                            break;
+                        }
+                    }
                 }
+            }
+        }
 
+        if (!musicPlaying[i]) {
+            musicStopped = false;
+        }
 
-
-        currentTime.incrementMinutes(incrementation);
-        PrevTime.incrementMinutes(incrementation);
-        cout << incrementation<<" minutes have passed..." << endl;
+        if (!musicPlaying[i] && currentTime >= times[i] && times[i] >= PrevTime) {
+            bool sameDormMusicID = false;
+            for (int j = 0; j < numberofchannels; j++) {
+                if (channels[j].occupied && channels[j].dormIndex == Records[i].Dorm && channels[j].musicID == Records[i].MusicID) {
+                    sameDormMusicID = true;
+                    musicPlaying[i] = true;
+                    channels[j].earpodID.push_back(Records[i].EarpodID);
+                    cout << "Multiple People in same Dorm with same MusicID Detected!\n";
+                    cout << "Music Channel " << j + 10 << " has also been allocated for EarpodID " << Records[i].EarpodID << " with MusicID " << Records[i].MusicID << endl;
+                    break;
+                }
+            }
+            if (!sameDormMusicID) {
+                for (int j = 0; j < numberofchannels; j++) {
+                    if (!channels[j].occupied) {
+                        channels[j].occupied = true;
+                        channels[j].dormIndex = Records[i].Dorm;
+                        channels[j].musicID = Records[i].MusicID;
+                        channels[j].earpodID.push_back(Records[i].EarpodID);
+                        cout << "Music Channel " << j + 10 << " has been allocated for EarpodID " << Records[i].EarpodID << " with MusicID " << Records[i].MusicID << endl;
+                        musicPlaying[i] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (musicPlaying[i] && Musicstop[i] >= currentTime) {
+            cout << "Music is currently playing for " << setw(9) << names[i] << endl;
+            musicStopped = false;
+        }
     }
+
+    if (musicStopped) {
+        cout << "Music is not being played for anyone right now" << endl;
+    }
+
+    currentTime.incrementMinutes(incrementation);
+    PrevTime.incrementMinutes(incrementation);
+    cout << incrementation << " minutes have passed..." << endl;
+}
 
 
     updateInmateRecords();
