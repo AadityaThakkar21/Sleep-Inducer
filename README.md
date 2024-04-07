@@ -327,7 +327,7 @@ Press ENTER to exit console.
 
 The Sleep Inducer System is a collaborative effort, and we extend our gratitude to the following contributors for their valuable contributions:
 
+   Vraj Chandrakant Patel
     Rishik Yalamanchili
     Lingampalli Venkata Subramanyam 
-	Vraj Chandrakant Patel
 	Aaditya Thakkar
