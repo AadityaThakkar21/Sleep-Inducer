@@ -227,7 +227,7 @@ int main()
     cout << "Eden(capacity = 20, music ID = 1 & 2, Ares(capacity = 20, music ID = 3 & 4))"<<endl;
     cout << "North Dorm(capacity = 20, music ID = 1 & 4, Central Dorm(capacity = 20, music ID = 2 & 3))\n"<<endl;    
 
-    string studentNames[] = {"Rishik", "Venkat", "Suhas", "John", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
+    string studentNames[] = {"Rishik", "Venkat", "Aaditya", "Vraj", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
                              "Hari", "Manav", "Madhu", "Arjun", "Ram", "Charan", "Siddharth", "Sri", "Uttam", "Kumar",
                              "Reddy", "Aarohi", "Kriti", "Shetty", "Prabhas", "Rajamouli", "Trivikram", "Bala", "Krishna", "Vinobha",
                              "Lohitha", "Rishi", "Niharaika", "Mahindra", "Nithin", "Aadi", "Ravi", "Soniya", "Lokesh", "Mukesh"};
