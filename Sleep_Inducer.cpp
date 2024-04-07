@@ -269,6 +269,7 @@ int main()
     cout << "You have set " << numberofchannels << " channels." << endl;
     cin.ignore();
     
+    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm, -1));
     vector<string> DormName;
     vector<int> ChannelID;
     vector<int> MusicID;
@@ -278,7 +279,7 @@ int main()
     int musicIDarray[N]; // Array to store musicID values for each inmate
     Time Musicstop[N]; // Array to store average time + P for each inmate
 //    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
-    
+    int Noofpeopleperdorm 
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
@@ -425,6 +426,33 @@ if (MyReadFile.is_open()) {
     }
 
     inFile.close();
+    
+int Noofpeopleperdorm = N / M;
+int RemainingNoofpeopleperdorm = N % M;
+
+vector<vector<int>> Dorms(M, vector<int>(Noofpeopleperdorm));
+int dormIndex = 0;
+int storing = 0;
+
+// Allocate earpod IDs to Dorms[M][peopleperdorm]
+for (int i = 0; i < N; i++) {
+    Dorms[dormIndex][storing++] = earpodIDarray[i];
+    if (storing == Noofpeopleperdorm) {
+        dormIndex++;
+        storing = 0;
+    }
+}
+
+// Allocate remaining earpod IDs if there are fewer people left than Noofpeopleperdorm
+int Remainingpeopleleft = N - (Noofpeopleperdorm * M);
+if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
+    for (int i = 0; i < M && Remainingpeopleleft < RemainingNoofpeopleperdorm; i++) {
+        Dorms[i][Noofpeopleperdorm] = earpodIDarray[N - RemainingNoofpeopleperdorm + Remainingpeopleleft];
+        Remainingpeopleleft++;
+    }
+}
+
+
 
     printNamesAndEarpodIDs(names, earpodIDarray, N);
 
@@ -474,47 +502,61 @@ if (MyReadFile.is_open()) {
     //     cout << music << endl;
     // }
 
-        Time currentTime(20, 0);
-        bool musicPlaying[N] = {false}; // Array to track if music is playing for each inmate
-        bool musicStopped = true; // Initialize musicStopped flag outside the loop
 
-        while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
-            cout << "\nCurrently the time is ";
-            currentTime.printTime();
-            cout << endl;
+    bool musicPlaying[N] = {false};
+    bool musicStopped[N] = {true};
+    
+    Time currentTime(20, 0);
+    Time PrevTime(19,30);
 
-            musicStopped = true; // Flag to check if music has stopped for all inmates
+    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+        cout << "\nCurrently the time is:";
+                    currentTime.printTime();
+
+        cout << endl;
+
+        // musicStopped = true;
 
         for (int i = 0; i < N; i++) {
-            if (currentTime >= times[i] && !musicPlaying[i]) {
+            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
                 cout<<right;
-                cout << "Music has been started playing for " <<setw(10)<< names[i] << " at ";
+                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
                 times[i].printTime();
                 cout << endl;
-                musicPlaying[i] = true; // Update musicPlaying status
-                musicStopped = false; // Music is playing, so update flag
-            }//Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no:
-            if (musicPlaying[i] && currentTime >= Musicstop[i]) {
-                cout << "Music has stopped playing for " <<setw(15)<< names[i] << " at ";
+                musicPlaying[i] = true;
+                musicStopped[i] = false;
+            }
+            
+            if ((musicPlaying[i]) &&( currentTime >= Musicstop[i]) ) {
+                cout << "Music has stopped playing for " <<setw(10)<< names[i] << " at ";
                 Musicstop[i].printTime();
                 cout << endl;
-                musicPlaying[i] = false; // Update musicPlaying status
-                musicStopped = false; // Music is playing, so update flag
+                musicPlaying[i] = false;
+                musicStopped[i] = true;
             }
+            
             if (!musicPlaying[i]) {
-                musicStopped = false; // Music is not stopped for at least one inmate
+                musicStopped[i] = false;
             }
-            else {
-                cout << "Music is currently playing for " << names[i] << endl;
+            if(musicPlaying[i]&& (Musicstop[i]>=currentTime)&&(times[i]>=currentTime)) {
+                cout << "Music is currently playing for " <<setw(9)<< names[i] << endl;
             }
         }
+bool allStopped = true;
+for (int i = 0; i < N; i++) {
+    if (!musicStopped[i]) {
+        allStopped = false;
+        break;
+    }
+}
 
-        if (musicStopped) {
-            cout << "Music is not being played to anyone right now" << endl;
-        }
+if (allStopped) {
+    cout << "Music is not being played for anyone right now" << endl;
+}
 
         currentTime.incrementMinutes(incrementation);
-        cout << incrementation<<" minutes has passed..." << endl;
+        PrevTime.incrementMinutes(incrementation);
+        cout << incrementation<<" minutes have passed..." << endl;
     }
 
     updateInmateRecords();
