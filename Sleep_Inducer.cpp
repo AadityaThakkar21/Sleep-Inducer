@@ -81,33 +81,43 @@ void generateInmateRecords(int N) {
                       "Lohitha", "Rishi", "Niharaika", "Mahindra", "Nithin", "Aadi", "Ravi", "Soniya", "Lokesh", "Mukesh"};
 
     int numNames = sizeof(names) / sizeof(names[0]);
+    int currentEarpodID = 1000; // Initialize currentEarpodID
 
     srand(static_cast<unsigned int>(time(0)));
 
     for (int i = 0; i < N; ++i) {
         string name = names[rand() % numNames];
-        int earpodID = randomInt(1000, 9999);
         Time sleepTime;
         generateRandomTime(sleepTime); // Generate random sleep time
         int p = randomInt(5, 60);
         int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
-        outFile<< left;
-        outFile << setw(10)<<name << " " << earpodID<<" ";
+
+        // Ensure earpodID is within 4 digits and starts from 1000
+        if (currentEarpodID >= 10000) {
+            cerr << "Error: Maximum earpodID limit reached." << endl;
+            break;
+        }
+        int earpodID = currentEarpodID++;
+
+        outFile << left;
+        outFile << setw(10) << name << " " << earpodID << " ";
+
         for (int j = 0; j < 7; ++j) {
             generateRandomTime(sleepTime); // Generate random sleep time
-        int p = randomInt(0, 60);
-        int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
+            int p = randomInt(0, 60);
+            int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
+
             outFile << " ";
             sleepTime.printTime();
-            cout<<" ";
-            outFile<<sleepTime.hours<<":";
-            if(sleepTime.minutes<10){
-                outFile<<"0";
+            cout << " ";
+            outFile << sleepTime.hours << ":";
+            if (sleepTime.minutes < 10) {
+                outFile << "0";
             }
-            outFile<<sleepTime.minutes<<" ";
+            outFile << sleepTime.minutes << " ";
         }
-        cout<<endl;
-        outFile << " " <<setw(3)<< p << " " << musicID << endl;
+        cout << endl;
+        outFile << " " << setw(3) << p << " " << musicID << endl;
     }
 
     outFile.close();
