@@ -6,8 +6,14 @@
 #include <sstream>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
+
 using namespace std;
-using std :: left;
+using std::left;
+
+const int MAX_DORMS = 100;
+const int MAX_INMATES_PER_DORM = 100;
+
 class Time {
 public:
     int hours;
@@ -26,7 +32,6 @@ public:
         }
     }
     void printTime() const {
-        //check();
         cout << hours << ":";
         if (minutes < 10) {
             cout << "0";
@@ -51,13 +56,13 @@ public:
     }
     
     bool operator>=(const Time& other) const {
-    if (hours > other.hours) {
-        return true;
-    } else if (hours == other.hours && minutes >= other.minutes) {
-        return true;
+        if (hours > other.hours) {
+            return true;
+        } else if (hours == other.hours && minutes >= other.minutes) {
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 };
 
 int randomInt(int min, int max) {
@@ -66,6 +71,65 @@ int randomInt(int min, int max) {
 
 void generateRandomTime(Time& sleepTime) {
     sleepTime.set(randomInt(20, 22), randomInt(0, 59));
+}
+
+void allocateEarpods(int Dorm[MAX_DORMS][MAX_INMATES_PER_DORM], int EarpodIDarray[], int musicIDarray[], int peopleperdorm) {
+    int musicIDInmates[MAX_DORMS][MAX_INMATES_PER_DORM] = {0};
+    int remainderInmates[MAX_DORMS] = {0};
+    int dormIndex = 0;
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
+            musicIDInmates[i][j] = -1;
+        }
+    }
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        remainderInmates[i] = -1;
+    }
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
+            Dorm[i][j] = -1;
+        }
+    }
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        int earpodID = EarpodIDarray[i];
+        int musicID = musicIDarray[i];
+
+        bool filled = false;
+
+        for (size_t j = 0; j < peopleperdorm; ++j) {
+            if (musicIDInmates[musicID][j] == -1) {
+                musicIDInmates[musicID][j] = earpodID;
+                filled = true;
+                break;
+            }
+        }
+
+        if (!filled) {
+            remainderInmates[dormIndex++] = earpodID;
+        }
+    }
+
+    dormIndex = 0;
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        for (size_t j = 0; j < peopleperdorm; ++j) {
+            if (musicIDInmates[i][j] != -1) {
+                Dorm[dormIndex][j] = musicIDInmates[i][j];
+            }
+        }
+        ++dormIndex;
+    }
+
+    for (size_t i = 0; i < MAX_DORMS; ++i) {
+        if (remainderInmates[i] != -1) {
+            Dorm[dormIndex][0] = remainderInmates[i];
+            ++dormIndex;
+        }
+    }
 }
 
 void generateInmateRecords(int N) {
@@ -108,15 +172,12 @@ void generateInmateRecords(int N) {
             int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
 
             outFile << " ";
-            // sleepTime.printTime();
-            // cout << " ";
             outFile << sleepTime.hours << ":";
             if (sleepTime.minutes < 10) {
                 outFile << "0";
             }
             outFile << sleepTime.minutes << " ";
         }
-        // cout << endl;
         outFile << " " << setw(3) << p << " " << musicID << endl;
     }
 
@@ -167,7 +228,7 @@ void updateInmateRecords() {
     }
 
     string line;
-    // int x;
+
     while (getline(inFile, line)) {
         stringstream ss(line);
         string name;
@@ -175,41 +236,32 @@ void updateInmateRecords() {
         int hours, minutes;
         int p;
         int musicID;
-        ss>>left;
+
         ss >> name >> earpodID;
-        ss >> hours;
-            ss.ignore();
-            // x=hours*60;
-            ss>> minutes;
-            // x+=minutes;
-            outFile<<left;
+
+        outFile << left;
         outFile << setw(10)<<name << " " << earpodID<<" ";
+
         for (int i = 1; i < 7; ++i) {
             ss >> hours;
             ss.ignore();
-            
             ss>> minutes;
-            // x+=hours*60+minutes;
             outFile<<hours<<":";
             if(minutes<10){
                 outFile<<"0";
             }
             outFile<<minutes<<" ";
         }
+
         ss >> p >> musicID;
 
         Time sleepTime;
         generateRandomTime(sleepTime); // Generate random sleep time
-outFile<< sleepTime.hours<<":";
+        outFile<< sleepTime.hours<<":";
         if(sleepTime.minutes<10){
             outFile<<"0";
         }
         outFile<<sleepTime.minutes;
-        // outFile<< x/(7*60)<<":";
-        // if(x%60<10){
-        //     outFile<<"0";
-        // }
-        // outFile<<x%60;
         outFile  << " "<<setw(3)<<p << " " << musicID << endl;
     }
 
@@ -217,15 +269,15 @@ outFile<< sleepTime.hours<<":";
     outFile.close();
 }
 
-void printNamesAndEarpodIDs(const string names[], const int earpodIDarray[], int N) {
+void printNamesAndEarpodIDs(const string names[], const vector<int>& earpodIDarray, int N) {
     cout << "Here is the list of Names and their respective EarpodID:" << endl;
+    
     for (int i = 0; i < N; i++) {
         cout << names[i] << ": " << earpodIDarray[i] << endl;
     }
 }
 
-int main()
-{   
+int main() {
     int N, M, incrementation, peopleperdorm, numberofchannels;
 
     cout << "Enter number of inmates:\n";
@@ -238,48 +290,46 @@ int main()
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
     cin.ignore();    
 
-    // Added code to read the number of people per dorm and number of channels
     cout << "Enter number of people per dorm:\n";
     cin >> peopleperdorm;
     cout << "You have set " << peopleperdorm << " people per dorm." << endl;
     cin.ignore();
-    // Check if N exceeds capacity
+    
     if(N<= M*peopleperdorm){
-        cout<<"Thank you.. You can accomdate sucessfully.\n";
+        cout<<"\n";
     }
     else if (N > M * (peopleperdorm+1)) {
         cout << "Error: Number of inmates exceeds dorm capacity. Program terminated." << endl;
-        return 1; // Terminate the program
+        return 1;
     }
     else if (N > M * (peopleperdorm) && N<= M*(peopleperdorm+1)) {
-        cout << "We can still alloctate inamtes in dorm by increasing one capacity, Do you want to continue?enter y for yes or else press anything " << endl;
+        cout << "We can still allocate inmates to dorms by increasing one dorm capacity, Do you want to continue? Enter 'y' for yes or any other character for no: " << endl;
        char y;
-       cin>>y;
-       if(y=="y"||y=="Y"){
+       cin >> y;
+       if(y=='y' || y=='Y'){
        peopleperdorm++;
        }
        else{
            return 0;
        }
     }
-    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
+    // vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
     
     cout << "Enter number of channels:\n";
     cin >> numberofchannels;
     cout << "You have set " << numberofchannels << " channels." << endl;
     cin.ignore();
     
-    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm, -1));
     vector<string> DormName;
     vector<int> ChannelID;
     vector<int> MusicID;
     string names[N];
-    Time times[N]; // Array to store average sleep times for each inmate
-    int Parray[N]; // Array to store P values for each inmate
-    int musicIDarray[N]; // Array to store musicID values for each inmate
-    Time Musicstop[N]; // Array to store average time + P for each inmate
-//    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
-    int Noofpeopleperdorm 
+    Time times[N];
+    int Parray[N];
+    int musicIDarray[N];
+    Time Musicstop[N];
+    int earpodIDarray[N];
+    
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
@@ -290,99 +340,144 @@ int main()
     }
     else {
         cout << "Sleep time will not be randomized\n";
-        cout << "Please make sure that the file, which you are going to upload is of the name 'Inmate_records.txt'\n";
-        cout << "Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
+        cout << "Please make sure that the file, which you are going to upload is named 'Inmate_records.txt'\n";
+        cout << "Is your file named 'Inmate_records.txt'? Enter 'Y' or 'y' for yes, press any other character to choose no: \n";
         char fileCheck;
         cin >> fileCheck;
             cin.ignore();
         if (fileCheck != 'Y' && fileCheck != 'y') {
-            cout << "Please change the name to 'Inmate_records.txt' and run the program again\n";
+            cout << "Please change the name to 'Inmate_records.txt' and re-run the program again\n";
             return 0;
         }
     }
     
     char UserDormtaken;
-cout << "Do you want to randomize the Dorms of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
-cin >> UserDormtaken;
-cin.ignore();
-if (UserDormtaken == 'Y' || UserDormtaken == 'y') {
-    cout << "Dorms will be randomized\n";
-    generateDormRecords(M, numberofchannels);
-}
-else {
-    cout << "Dorms will not be randomized\n";
-    cout << "Please make sure that the file, which you are going to upload is of the name 'Dorm_records.txt'\n";
-    cout << "Is your File named 'Dorm_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
-    char fileCheck;
-    cin >> fileCheck;
+    cout << "Do you want to randomize the Dorms of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+    cin >> UserDormtaken;
     cin.ignore();
-    if (fileCheck != 'Y' && fileCheck != 'y') {
-        cout << "Please change the name to 'Dorm_records.txt' and run the program again\n";
-        return 0;
+    if (UserDormtaken == 'Y' || UserDormtaken == 'y') {
+        cout << "Dorms will be randomized\n";
+        generateDormRecords(M, numberofchannels);
     }
-}
+    else {
+        cout << "Dorms will not be randomized\n";
+        cout << "Please make sure that the file, which you are going to upload is named 'Dorm_records.txt'\n";
+        cout << "Is your file named 'Dorm_records.txt'? Enter 'Y' or 'y' for yes, press any other character to choose no: ";
+        char fileCheck;
+        cin >> fileCheck;
+        cin.ignore();
+        if (fileCheck != 'Y' && fileCheck != 'y') {
+            cout << "Please change the name to 'Dorm_records.txt' and run the program again\n";
+            return 0;
+        }
+        else{
+            ifstream file("Inmate_records.txt");
+        string myText;
+        if(!file.is_open()){
+            cout<<"Error opening file.\n";
+            return 0;
+        }
+        else{
+            int check=0;
+            while(getline(file,myText)){
+                check++;
+            }
+            if(check!=N){
+                cout<<"The file doesn't have "<<N<<" inputs.\nDo you want to continue with "<<check<<" number of inputs?(Enter y for yes, if you enter anyother , it will be taken as a no)";
+                char s;
+                cin>>s;
+                if(s=='y'||s=='Y'){
+                    N=check;
+                    cout<<"Proceeding.Thank you.Please re enter number again."<<endl;
+                    cout << "Enter number of Dorms:\n";
+    cin >> M;
+    cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
+    cin.ignore();    
+
+    cout << "Enter number of people per dorm:\n";
+    cin >> peopleperdorm;
+    cout << "You have set " << peopleperdorm << " people per dorm." << endl;
+    cin.ignore();
+    
+    if(N<= M*peopleperdorm){
+        cout<<"\n";
+    }
+    else if (N > M * (peopleperdorm+1)) {
+        cout << "Error: Number of inmates exceeds dorm capacity. Program terminated." << endl;
+        return 1;
+    }
+    else if (N > M * (peopleperdorm) && N<= M*(peopleperdorm+1)) {
+        cout << "We can still allocate inmates to dorms by increasing one dorm capacity, Do you want to continue? Enter 'y' for yes or any other character for no: " << endl;
+       char y;
+       cin >> y;
+       if(y=='y' || y=='Y'){
+       peopleperdorm++;
+       }
+       else{
+           return 0;
+       }
+    }
+                }
+                else{
+                return 0;
+            }
+            }
+        }
+        }
+    }
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
-        cin.ignore();
+    cin.ignore();
     cout << "The time will increment every " << incrementation << " minutes." << endl;
 
-    // Read inmate records and calculate required information
-ifstream MyReadFile("Inmate_records.txt");
-string myText;
+    ifstream MyReadFile("Inmate_records.txt");
+    string myText;
 
-if (MyReadFile.is_open()) {
-    string names[N];
-    Time times[N], Musicstop[N];
-    int Parray[N], musicIDarray[N], earpodIDarray[N]; // Added earpodIDarray[] array
+    if (MyReadFile.is_open()) {
+        int idx = 0;
+        while (getline(MyReadFile, myText) && idx < N) {
+            stringstream ss(myText);
+            string name;
+            int earpodID, hours, minutes, p, musicID;
 
-    int idx = 0;
-    while (getline(MyReadFile, myText) && idx < N) {
-        stringstream ss(myText);
-        string name;
-        int earpodID, hours, minutes, p, musicID;
+            ss >> name >> earpodID;
+            names[idx] = name;
+            earpodIDarray[idx] = earpodID; 
+            int totalHours = 0, totalMinutes = 0;
+            
+            for (int i = 0; i < 7; i++) {
+                ss >> hours;
+                ss.ignore();
+                ss >> minutes;
 
-        ss >> name >> earpodID;
-        names[idx] = name;
-        earpodIDarray[idx] = earpodID; // Record earpodID
+                if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
+                    cout << "Invalid time value: " << hours << ":" << minutes << endl;
+                    break;
+                }
 
-        int totalHours = 0, totalMinutes = 0;
-        
-        for (int i = 0; i < 7; i++) {
-            ss >> hours; // Read hours
-            ss.ignore(); // Ignore the column ':'
-            ss >> minutes; // Read minutes
-
-            // Check for invalid time values
-            if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
-                cout << "Invalid time value: " << hours << ":" << minutes << endl;
-                break; // Exit the loop if the time value is invalid
+                totalHours += hours;
+                totalMinutes += minutes;
             }
 
-            totalHours += hours;
-            totalMinutes += minutes;
+            int averageHours = totalHours / 7;
+            int averageMinutes = totalMinutes / 7;
+
+            times[idx].set(averageHours, averageMinutes);
+
+            ss >> p >> musicID;
+            Parray[idx] = p;
+            musicIDarray[idx] = musicID;
+
+            Musicstop[idx] = times[idx];
+            Musicstop[idx].incrementMinutes(Parray[idx]);
+
+            idx++;
         }
-
-        // Calculate average time for the inmate
-        int averageHours = totalHours / 7;
-        int averageMinutes = totalMinutes / 7;
-
-        times[idx].set(averageHours, averageMinutes);
-
-        ss >> p >> musicID;
-        Parray[idx] = p;
-        musicIDarray[idx] = musicID;
-
-        // Calculate Musicstop by adding average time and P
-        Musicstop[idx] = times[idx];
-        Musicstop[idx].incrementMinutes(Parray[idx]);
-
-        idx++;
+        MyReadFile.close();
     }
-    MyReadFile.close();
-}
-        
-            ifstream inFile("Dorm_records.txt");
+            
+    ifstream inFile("Dorm_records.txt");
     if (!inFile) {
         cerr << "Error opening input file." << endl;
         return 1;
@@ -427,105 +522,76 @@ if (MyReadFile.is_open()) {
 
     inFile.close();
     
-int Noofpeopleperdorm = N / M;
+    cout << "There are currently " << N << " inmates in " << M << " dorms" << endl;
+    cout << "\nThe Present Inmates average Sleep times are:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout<<left;
+        cout <<setw(10)<< names[i] << ": ";
+        times[i].printTime();
+        cout << endl;
+    }
+    int Noofpeopleperdorm = N / M;
 int RemainingNoofpeopleperdorm = N % M;
 
-vector<vector<int>> Dorms(M, vector<int>(Noofpeopleperdorm));
-int dormIndex = 0;
-int storing = 0;
+// vector<vector<int>> Dorms(M, vector<int>(Noofpeopleperdorm));
+// Dorms[M][Noofpeopleperdorm];
+// int dormIndex = 0;
+// int storing = 0;
 
-// Allocate earpod IDs to Dorms[M][peopleperdorm]
-for (int i = 0; i < N; i++) {
-    Dorms[dormIndex][storing++] = earpodIDarray[i];
-    if (storing == Noofpeopleperdorm) {
-        dormIndex++;
-        storing = 0;
-    }
-}
+// // Allocate earpod IDs to Dorms[M][peopleperdorm]
+// for (int i = 0; i < N; i++) {
+//     Dorms[dormIndex][storing++] = earpodIDarray[i];
+//     if (storing == Noofpeopleperdorm) {
+//         dormIndex++;
+//         storing = 0;
+//     }
+// }
 
-// Allocate remaining earpod IDs if there are fewer people left than Noofpeopleperdorm
-int Remainingpeopleleft = N - (Noofpeopleperdorm * M);
-if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
-    for (int i = 0; i < M && Remainingpeopleleft < RemainingNoofpeopleperdorm; i++) {
-        Dorms[i][Noofpeopleperdorm] = earpodIDarray[N - RemainingNoofpeopleperdorm + Remainingpeopleleft];
-        Remainingpeopleleft++;
-    }
-}
-
-
-
-    printNamesAndEarpodIDs(names, earpodIDarray, N);
-
-        // Now 'times' array contains the average sleep times for each inmate
-        cout << "There are currently " << N << " inmates in " << M << " dorms" << endl;
-        cout << "\nThe Present Inmates average Sleep times are:" << endl;
-        for (int i = 0; i < N; i++) {
-            cout<<left;
-            cout <<setw(10)<< names[i] << ": ";
-            times[i].printTime();
-            cout << endl;
-        }
-
-        cout << "\nTime taken by each inmate to fall asleep are:" << endl;
-        for (int i = 0; i < N; i++) {
-            cout << setw(10)<<names[i] << ": " << Parray[i] << " minutes" << endl;
-        }
-
-        cout << "\nMusic for each inmate will Automatically stop at:" << endl;
-        for (int i = 0; i < N; i++) {
-            cout << setw(10)<<names[i] << ": ";
-            Musicstop[i].check();
+    // // Allocate remaining earpod IDs if there are fewer people left than Noofpeopleperdorm
+    // int Remainingpeopleleft = N - (Noofpeopleperdorm * M);
+    // if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
+    // for (int i = 0; i < M && Remainingpeopleleft < RemainingNoofpeopleperdorm; i++) {
+    //     Dorms[i][Noofpeopleperdorm] = earpodIDarray[N - RemainingNoofpeopleperdorm + Remainingpeopleleft];
+    //     Remainingpeopleleft++;
+    // }
+    // }
+    // printNamesAndEarpodIDs(names, earpodIDarray, N);
+    int Dorms[M][Noofpeopleperdorm];
+    for(int i=0;i<N;i++){
+        for(int j;j<N;j++){
             
-            Musicstop[i].printTime();
-            cout << endl;
         }
     }
-    else {
-        cout << "Unable to open file";
+    cout << "\nTime taken by each inmate to fall asleep are:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << setw(10)<<names[i] << ": " << Parray[i] << " minutes" << endl;
+    }
+
+    
+    cout << "\nMusic for each inmate will Automatically stop at:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << setw(10)<<names[i] << ": ";
+        Musicstop[i].check();
+        
+        Musicstop[i].printTime();
+        cout << endl;
     }
     
-    
-    
-        // Display the read data
-    // cout << "\nDorm Names:" << endl;
-    // for (const string& dorm : DormName) {
-    //     cout << dorm << endl;
-    // }
-
-    // cout << "\nChannel IDs:" << endl;
-    // for (int channel : ChannelID) {
-    //     cout << channel << endl;
-    // }
-
-    // cout << "\nMusic IDs:" << endl;
-    // for (int music : MusicID) {
-    //     cout << music << endl;
-    // }
-
-
     bool musicPlaying[N] = {false};
     bool musicStopped[N] = {true};
-    
     Time currentTime(20, 0);
     Time PrevTime(19,30);
-
+    
     while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
         cout << "\nCurrently the time is:";
                     currentTime.printTime();
-
+int check=0;
         cout << endl;
 
         // musicStopped = true;
 
         for (int i = 0; i < N; i++) {
-            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
-                cout<<right;
-                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
-                times[i].printTime();
-                cout << endl;
-                musicPlaying[i] = true;
-                musicStopped[i] = false;
-            }
+            
             
             if ((musicPlaying[i]) &&( currentTime >= Musicstop[i]) ) {
                 cout << "Music has stopped playing for " <<setw(10)<< names[i] << " at ";
@@ -538,21 +604,29 @@ if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
             if (!musicPlaying[i]) {
                 musicStopped[i] = false;
             }
-            if(musicPlaying[i]&& (Musicstop[i]>=currentTime)&&(times[i]>=currentTime)) {
+            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
+                cout<<right;
+                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
+                times[i].printTime();
+                cout << endl;
+                musicPlaying[i] = true;
+                musicStopped[i] = false;
+            }
+            else if(musicPlaying[i]&& (Musicstop[i]>=currentTime)) {
                 cout << "Music is currently playing for " <<setw(9)<< names[i] << endl;
             }
         }
-bool allStopped = true;
-for (int i = 0; i < N; i++) {
-    if (!musicStopped[i]) {
-        allStopped = false;
-        break;
-    }
-}
+        for(int i=0;i<N;i++){
+            if(musicStopped[i]){
+                check++;
+            }
+        }
 
-if (allStopped) {
-    cout << "Music is not being played for anyone right now" << endl;
-}
+                if (check==N) {
+                   cout << "Music is not being played for anyone right now" << endl;
+                }
+
+
 
         currentTime.incrementMinutes(incrementation);
         PrevTime.incrementMinutes(incrementation);
@@ -563,4 +637,3 @@ if (allStopped) {
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
-//https://stackoverflow.com/questions/11226143/formatting-output-in-c
