@@ -178,7 +178,7 @@ void updateInmateRecords() {
 
 int main()
 {   
-    int N, M, incrementation;
+    int N, M, incrementation, peopleperdorm, numberofchannels;
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
@@ -187,12 +187,24 @@ int main()
     cin >> M;
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
     cin.ignore();    
+
+    // Added code to read the number of people per dorm and number of channels
+    cout << "Enter number of people per dorm:\n";
+    cin >> peopleperdorm;
+    cout << "You have set " << peopleperdorm << " people per dorm." << endl;
+    cin.ignore();
+    
+    cout << "Enter number of channels:\n";
+    cin >> numberofchannels;
+    cout << "You have set " << numberofchannels << " channels." << endl;
+    cin.ignore();
+    
     string names[N];
     Time times[N]; // Array to store average sleep times for each inmate
     int Parray[N]; // Array to store P values for each inmate
     int musicIDarray[N]; // Array to store musicID values for each inmate
     Time Musicstop[N]; // Array to store average time + P for each inmate
-    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
+//    int Noofpeopleperdorm = ceil(static_cast<double>(N) / M);
     
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
