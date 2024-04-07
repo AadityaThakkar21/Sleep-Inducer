@@ -27,6 +27,8 @@ The code is organized into the following components:
 
 - Main Program: Entry point of the program with sample data for testing and demonstration.
 
+- The time complexity and Space complexity of the program is O(n) and O(m)
+
 # Usage
 
 Utilize the Sleep Inducer System to efficiently manage inmate records, allocate dormitories based on music preferences, and assign personalized music channels.
