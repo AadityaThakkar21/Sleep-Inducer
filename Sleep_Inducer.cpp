@@ -719,3 +719,17 @@ int check=0;
 
                 if (check==N) {
                    cout << "Music is not being played for anyone right now" << endl;
+                }
+
+
+
+        currentTime.incrementMinutes(incrementation);
+        PrevTime.incrementMinutes(incrementation);
+        cout << incrementation<<" minutes have passed..." << endl;
+    }
+
+
+    updateInmateRecords();
+    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
+    return 0;
+}
