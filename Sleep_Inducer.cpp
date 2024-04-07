@@ -434,7 +434,8 @@ int main() {
 
                 if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
                     cout << "Invalid time value: " << hours << ":" << minutes << endl;
-                    break;
+                    cerr << "Error invalid time";
+                    return 0;
                 }
 
                 totalHours += hours;
@@ -662,23 +663,3 @@ while (currentTime.isWithinRange() && !(currentTime.hours == 23 && currentTime.m
                 }
             }
         }
-        else if (musicPlaying[i] && Musicstop[i] >= currentTime) {
-            cout << "Music is currently playing for " << setw(9) << names[i] << endl;
-            musicStopped = false;
-        }
-    }
-
-    if (musicStopped) {
-        cout << "Music is not being played for anyone right now" << endl;
-    }
-
-    currentTime.incrementMinutes(incrementation);
-    PrevTime.incrementMinutes(incrementation);
-    cout << incrementation << " minutes have passed..." << endl;
-}
-
-
-    updateInmateRecords();
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
-    return 0;
-}
