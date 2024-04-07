@@ -113,6 +113,35 @@ void generateInmateRecords(int N) {
     outFile.close();
 }
 
+void generateDormRecords(int M, int numberofchannels) {
+    ofstream outFile("Dorm_records.txt");
+    if (!outFile) {
+        cerr << "Error creating output file." << endl;
+        return;
+    }
+
+    char dormName = 'A'; // Start with DormA and increment for each dorm
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 0; i < M; ++i) {
+        outFile << "Dorm" << dormName << " "; // Output Dorm name
+        dormName++; // Increment dorm name for the next dorm
+    }
+    outFile << endl;
+
+    for (int j = 0; j < numberofchannels; ++j) {
+        outFile << j + 10 << " "; // Generate channel numbers starting from 10
+    }
+    outFile << endl;
+
+    for (int k = 1; k < 6; ++k) {
+        outFile << k << " "; // Generate music ID numbers starting from 1
+    }
+    outFile << endl;
+
+    outFile.close();
+}
+
 void updateInmateRecords() {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
@@ -175,14 +204,9 @@ void updateInmateRecords() {
     outFile.close();
 }
 
-
-int main()
-{   
 int main()
 {   
     int N, M, incrementation, peopleperdorm, numberofchannels;
-
-    int Dorms[M][peopleperdorm];
 
     cout << "Enter number of inmates:\n";
     cin >> N;
@@ -199,6 +223,8 @@ int main()
     cin >> peopleperdorm;
     cout << "You have set " << peopleperdorm << " people per dorm." << endl;
     cin.ignore();
+    
+    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
     
     cout << "Enter number of channels:\n";
     cin >> numberofchannels;
@@ -232,6 +258,27 @@ int main()
             return 0;
         }
     }
+    
+    char UserDormtaken;
+cout << "Do you want to randomize the Dorms of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+cin >> UserDormtaken;
+cin.ignore();
+if (UserDormtaken == 'Y' || UserDormtaken == 'y') {
+    cout << "Dorms will be randomized\n";
+    generateDormRecords(M, numberofchannels);
+}
+else {
+    cout << "Dorms will not be randomized\n";
+    cout << "Please make sure that the file, which you are going to upload is of the name 'Dorm_records.txt'\n";
+    cout << "Is your File named 'Dorm_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
+    char fileCheck;
+    cin >> fileCheck;
+    cin.ignore();
+    if (fileCheck != 'Y' && fileCheck != 'y') {
+        cout << "Please change the name to 'Dorm_records.txt' and run the program again\n";
+        return 0;
+    }
+}
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
@@ -337,7 +384,7 @@ for (int i = 0; i < 7; i++) {
                 cout << endl;
                 musicPlaying[i] = true; // Update musicPlaying status
                 musicStopped = false; // Music is playing, so update flag
-            }
+            }Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no:
             if (musicPlaying[i] && currentTime >= Musicstop[i]) {
                 cout << "Music Has stopped playing for " << names[i] << " at ";
                 Musicstop[i].printTime();
