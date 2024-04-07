@@ -330,8 +330,9 @@ int main() {
     cin.ignore();
     
     vector<string> DormName;
-    vector<vector<int>> ChannelID;
     vector<int> ChannelIDrecord;
+    int Channelsize = ChannelIDrecord.size();
+    vector<vector<int>> ChannelID(Channelsize, vector<int>(peopleperdorm));
     vector<int> MusicID;
     string names[N];
     Time times[N];
@@ -434,7 +435,7 @@ int main() {
             }
         }
         }
-    }
+
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
