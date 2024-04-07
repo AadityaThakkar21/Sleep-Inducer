@@ -228,7 +228,7 @@ void updateInmateRecords() {
     }
 
     string line;
-
+    // int x;
     while (getline(inFile, line)) {
         stringstream ss(line);
         string name;
@@ -236,32 +236,41 @@ void updateInmateRecords() {
         int hours, minutes;
         int p;
         int musicID;
-
+        ss>>left;
         ss >> name >> earpodID;
-
-        outFile << left;
+        ss >> hours;
+            ss.ignore();
+            // x=hours*60;
+            ss>> minutes;
+            // x+=minutes;
+            outFile<<left;
         outFile << setw(10)<<name << " " << earpodID<<" ";
-
         for (int i = 1; i < 7; ++i) {
             ss >> hours;
             ss.ignore();
+            
             ss>> minutes;
+            // x+=hours*60+minutes;
             outFile<<hours<<":";
             if(minutes<10){
                 outFile<<"0";
             }
             outFile<<minutes<<" ";
         }
-
         ss >> p >> musicID;
 
         Time sleepTime;
         generateRandomTime(sleepTime); // Generate random sleep time
-        outFile<< sleepTime.hours<<":";
+outFile<< sleepTime.hours<<":";
         if(sleepTime.minutes<10){
             outFile<<"0";
         }
         outFile<<sleepTime.minutes;
+        // outFile<< x/(7*60)<<":";
+        // if(x%60<10){
+        //     outFile<<"0";
+        // }
+        // outFile<<x%60;
         outFile  << " "<<setw(3)<<p << " " << musicID << endl;
     }
 
@@ -269,9 +278,8 @@ void updateInmateRecords() {
     outFile.close();
 }
 
-void printNamesAndEarpodIDs(const string names[], const vector<int>& earpodIDarray, int N) {
+void printNamesAndEarpodIDs(const string names[], const int earpodIDarray[], int N) {
     cout << "Here is the list of Names and their respective EarpodID:" << endl;
-    
     for (int i = 0; i < N; i++) {
         cout << names[i] << ": " << earpodIDarray[i] << endl;
     }
@@ -290,17 +298,18 @@ int main() {
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
     cin.ignore();    
 
+        // Added code to read the number of people per dorm and number of channels
     cout << "Enter number of people per dorm:\n";
     cin >> peopleperdorm;
     cout << "You have set " << peopleperdorm << " people per dorm." << endl;
     cin.ignore();
-    
+    // Check if N exceeds capacity
     if(N<= M*peopleperdorm){
-        cout<<"\n";
+        cout<<"Thank you.. You can accomdate sucessfully.\n";
     }
     else if (N > M * (peopleperdorm+1)) {
         cout << "Error: Number of inmates exceeds dorm capacity. Program terminated." << endl;
-        return 1;
+        return 1; // Terminate the program
     }
     else if (N > M * (peopleperdorm) && N<= M*(peopleperdorm+1)) {
         cout << "We can still allocate inmates to dorms by increasing one dorm capacity, Do you want to continue? Enter 'y' for yes or any other character for no: " << endl;
@@ -576,62 +585,61 @@ int RemainingNoofpeopleperdorm = N % M;
         Musicstop[i].printTime();
         cout << endl;
     }
-    
-    bool musicPlaying[N] = {false};
-    bool musicStopped[N] = {true};
-    Time currentTime(20, 0);
-    Time PrevTime(19,30);
-    
-    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
-        cout << "\nCurrently the time is:";
-                    currentTime.printTime();
-int check=0;
-        cout << endl;
+ bool musicPlaying[N] = {false};
+bool musicStopped[N] = {true};
+Time currentTime(20, 0);
+Time PrevTime(19, 30);
 
-        // musicStopped = true;
+while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+    cout << "\nCurrently the time is:";
+    currentTime.printTime();
+    int check = 0;
 
-        for (int i = 0; i < N; i++) {
-            
-            
-            if ((musicPlaying[i]) &&( currentTime >= Musicstop[i]) ) {
-                cout << "Music has stopped playing for " <<setw(10)<< names[i] << " at ";
-                Musicstop[i].printTime();
-                cout << endl;
-                musicPlaying[i] = false;
-                musicStopped[i] = true;
-            }
-            
-            if (!musicPlaying[i]) {
-                musicStopped[i] = false;
-            }
-            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
-                cout<<right;
-                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
-                times[i].printTime();
-                cout << endl;
-                musicPlaying[i] = true;
-                musicStopped[i] = false;
-            }
-            else if(musicPlaying[i]&& (Musicstop[i]>=currentTime)) {
-                cout << "Music is currently playing for " <<setw(9)<< names[i] << endl;
-            }
-        }
-        for(int i=0;i<N;i++){
-            if(musicStopped[i]){
-                check++;
-            }
+    cout << endl;
+
+    bool musicCurrentlyPlaying = false; // Flag to track if music is currently playing
+
+    for (int i = 0; i < N; i++) {
+        if ((musicPlaying[i]) && (currentTime >= Musicstop[i])) {
+            cout << "Music has stopped playing for " << setw(10) << names[i] << " at ";
+            Musicstop[i].printTime();
+            cout << endl;
+            musicPlaying[i] = false;
+            musicStopped[i] = true;
         }
 
-                if (check==N) {
-                   cout << "Music is not being played for anyone right now" << endl;
-                }
+        if (!musicPlaying[i]) {
+            musicStopped[i] = false;
+        }
 
-
-
-        currentTime.incrementMinutes(incrementation);
-        PrevTime.incrementMinutes(incrementation);
-        cout << incrementation<<" minutes have passed..." << endl;
+        if ((currentTime >= times[i]) && (!musicPlaying[i]) && (times[i] >= PrevTime)) {
+            cout << right;
+            cout << "Music has started playing for " << setw(10) << names[i] << " at ";
+            times[i].printTime();
+            cout << endl;
+            musicPlaying[i] = true;
+            musicStopped[i] = false;
+            musicCurrentlyPlaying = true; // Set the flag when music starts playing
+        } else if (musicPlaying[i] && (Musicstop[i] >= currentTime)) {
+            cout << "Music is currently playing for " << setw(9) << names[i] << endl;
+            musicCurrentlyPlaying = true; // Set the flag when music is playing
+        }
     }
+
+    for (int i = 0; i < N; i++) {
+        if (musicStopped[i]) {
+            check++;
+        }
+    }
+
+    if (!musicCurrentlyPlaying) { // Print only when no music is currently playing
+        cout << "Music is not being played for anyone right now" << endl;
+    }
+
+    currentTime.incrementMinutes(incrementation);
+    PrevTime.incrementMinutes(incrementation);
+    cout << incrementation << " minutes have passed..." << endl;
+}
 
     updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
