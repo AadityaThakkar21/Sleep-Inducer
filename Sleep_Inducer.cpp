@@ -714,3 +714,4 @@ Time PrevTime(19, 30);
     updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
+}
