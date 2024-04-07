@@ -216,25 +216,102 @@ void updateInmateRecords() {
 
 int main()
 {   
-    int N, M, incrementation, peopleperdorm, numberofchannels;
+    int N, incrementation, peopleperdorm, numberofchannels;
 
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
     cin.ignore();
     
-    cout << "Enter number of Dorms:\n";
-    cin >> M;
-    cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
-    cin.ignore();    
+    cout << "There are 4 dorms for the inmates to stay.\nWe assign them based on the musicIDs of the inmates\n" <<endl;
+    cout << "Eden(capacity = 20, music ID = 1 & 2, Ares(capacity = 20, music ID = 3 & 4))"<<endl;
+    cout << "North Dorm(capacity = 20, music ID = 1 & 4, Central Dorm(capacity = 20, music ID = 2 & 3))\n"<<endl;    
 
-    // Added code to read the number of people per dorm and number of channels
-    cout << "Enter number of people per dorm:\n";
-    cin >> peopleperdorm;
-    cout << "You have set " << peopleperdorm << " people per dorm." << endl;
-    cin.ignore();
-    
-    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
+    string studentNames[] = {"Rishik", "Venkat", "Suhas", "John", "Adwaith", "Jayanth", "Sophia", "Krupa", "Sai", "Eswar",
+                             "Hari", "Manav", "Madhu", "Arjun", "Ram", "Charan", "Siddharth", "Sri", "Uttam", "Kumar",
+                             "Reddy", "Aarohi", "Kriti", "Shetty", "Prabhas", "Rajamouli", "Trivikram", "Bala", "Krishna", "Vinobha",
+                             "Lohitha", "Rishi", "Niharaika", "Mahindra", "Nithin", "Aadi", "Ravi", "Soniya", "Lokesh", "Mukesh"};
+    int musicIDs[] = {3, 1, 2, 4, 2, 3, 1, 4, 3, 2,
+                      1, 4, 2, 3, 1, 2, 3, 4, 1, 2,
+                      3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
+                      1, 2, 3, 4, 1, 2, 3, 4, 1, 2}; // Example music IDs associated with each student
+
+    string studentNames_updated[N];
+    int musicIDs_updated[N];
+
+    for (int i = 0; i < N; i++) {
+        studentNames_updated[i] = studentNames[i];
+        musicIDs_updated[i] = musicIDs[i];
+    }
+
+    vector<int> Eden, Ares, NorthDorm, CentralDorm;
+    srand(time(0));
+    int x,y,z,w;
+    for (int i = 0; i < N; i++) {
+        switch (musicIDs_updated[i]){
+            case 1: 
+                x = rand() % 2;
+                if (x == 0){
+                    Eden.push_back(musicIDs_updated[i]);
+                }
+                else{
+                    NorthDorm.push_back(musicIDs_updated[i]);
+                }
+                break;
+            case 2:
+                y = rand() % 2;
+                if (y == 0){
+                    Eden.push_back(musicIDs_updated[i]);
+                }
+                else{
+                    CentralDorm.push_back(musicIDs_updated[i]);
+                }
+                break;
+            case 3:
+                z = rand() % 2;
+                if (z == 0){
+                    Ares.push_back(musicIDs_updated[i]);
+                }
+                else{
+                    CentralDorm.push_back(musicIDs_updated[i]);
+                }
+                break;
+            case 4:
+                w = rand() % 2;
+                if (w == 0){
+                    Ares.push_back(musicIDs_updated[i]);
+                }
+                else{
+                    NorthDorm.push_back(musicIDs_updated[i]);
+                }
+                break;
+            
+        }
+    }
+
+    cout << "Eden Dorm Music IDs: ";
+    for (int id : Eden) {
+        cout << id << " ";
+    }
+    cout << endl;
+
+    cout << "Ares Dorm Music IDs: ";
+    for (int id : Ares) {
+        cout << id << " ";
+    }
+    cout << endl;
+
+    cout << "North Dorm Music IDs: ";
+    for (int id : NorthDorm) {
+        cout << id << " ";
+    }
+    cout << endl;
+
+    cout << "Central Dorm Music IDs: ";
+    for (int id : CentralDorm) {
+        cout << id << " ";
+    }
+    cout << endl;
     
     cout << "Enter number of channels:\n";
     cin >> numberofchannels;
