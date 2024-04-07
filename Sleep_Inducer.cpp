@@ -5,8 +5,9 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <iomanip>
 using namespace std;
-
+using std :: left;
 class Time {
 public:
     int hours;
@@ -26,9 +27,9 @@ public:
     }
     void printTime() const {
         //check();
-        std::cout << hours << ":";
+        cout << hours << ":";
         if (minutes < 10) {
-            std::cout << "0";
+            cout << "0";
         }
         std::cout << minutes;
     }
@@ -88,11 +89,14 @@ void generateInmateRecords(int N) {
         int earpodID = randomInt(1000, 9999);
         Time sleepTime;
         generateRandomTime(sleepTime); // Generate random sleep time
+        int p = randomInt(5, 60);
+        int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
+        outFile<< left;
+        outFile << setw(10)<<name << " " << earpodID<<" ";
+        for (int j = 0; j < 7; ++j) {
+            generateRandomTime(sleepTime); // Generate random sleep time
         int p = randomInt(0, 60);
         int musicID = randomInt(1, 5); // Changed to 5 for consistency with your previous code
-
-        outFile << name << " " << earpodID;
-        for (int j = 0; j < 7; ++j) {
             outFile << " ";
             sleepTime.printTime();
             cout<<" ";
@@ -103,7 +107,7 @@ void generateInmateRecords(int N) {
             outFile<<sleepTime.minutes<<" ";
         }
         cout<<endl;
-        outFile << " " << p << " " << musicID << endl;
+        outFile << " " <<setw(3)<< p << " " << musicID << endl;
     }
 
     outFile.close();
@@ -124,6 +128,7 @@ void updateInmateRecords() {
     }
 
     string line;
+    int x;
     while (getline(inFile, line)) {
         stringstream ss(line);
         string name;
@@ -131,16 +136,21 @@ void updateInmateRecords() {
         int hours, minutes;
         int p;
         int musicID;
-
+        ss>>left;
         ss >> name >> earpodID;
         ss >> hours;
             ss.ignore();
+            x=hours*60;
             ss>> minutes;
-        outFile << name << " " << earpodID<<" ";
+            x+=minutes;
+            outFile<<left;
+        outFile << setw(10)<<name << " " << earpodID<<" ";
         for (int i = 1; i < 7; ++i) {
             ss >> hours;
             ss.ignore();
+            
             ss>> minutes;
+            x+=hours*60+minutes;
             outFile<<hours<<":";
             if(minutes<10){
                 outFile<<"0";
@@ -149,11 +159,16 @@ void updateInmateRecords() {
         }
         ss >> p >> musicID;
 
-        Time sleepTime;
-        generateRandomTime(sleepTime); // Generate random sleep time
+        // Time sleepTime;
+        // generateRandomTime(sleepTime); // Generate random sleep time
 
-        outFile<< sleepTime.hours<<":"<<sleepTime.minutes;
-        outFile  << " "<<p << " " << musicID << endl;
+        // outFile<< sleepTime.hours<<":"<<sleepTime.minutes;
+        outFile<< x/(7*60)<<":";
+        if(x%60<10){
+            outFile<<"0";
+        }
+        outFile<<x%60;
+        outFile  << " "<<setw(3)<<p << " " << musicID << endl;
     }
 
     inFile.close();
@@ -162,16 +177,16 @@ void updateInmateRecords() {
 
 
 int main()
-{
+{   
     int N, M, incrementation;
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
-
+    cin.ignore();
     cout << "Enter number of Dorms:\n";
     cin >> M;
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
-    
+    cin.ignore();    
     string names[N];
     Time times[N]; // Array to store average sleep times for each inmate
     int Parray[N]; // Array to store P values for each inmate
@@ -182,7 +197,7 @@ int main()
     char UserRandomtaken;
     cout << "Do you want to randomize the sleep time of inmates? Enter 'Y' or 'y' for yes, press any other character to choose as no: ";
     cin >> UserRandomtaken;
-
+    cin.ignore();
     if (UserRandomtaken == 'Y' || UserRandomtaken == 'y') {
         cout << "Sleep time will be randomized\n";
         generateInmateRecords(N);
@@ -193,6 +208,7 @@ int main()
         cout << "Is your File named 'Inmate_records.txt' ? Enter 'Y' or 'y' for yes, press any other character to choose as no: \n";
         char fileCheck;
         cin >> fileCheck;
+            cin.ignore();
         if (fileCheck != 'Y' && fileCheck != 'y') {
             cout << "Please change the name to 'Inmate_records.txt' and run the program again\n";
             return 0;
@@ -201,6 +217,7 @@ int main()
 
     cout << "How much incrementation do you want to take every cycle? Enter the value: ";
     cin >> incrementation;
+        cin.ignore();
     cout << "The time will increment every " << incrementation << " minutes." << endl;
 
     // Read inmate records and calculate required information
@@ -230,7 +247,7 @@ for (int i = 0; i < 7; i++) {
 
     // Check for invalid time values
     if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
-        cerr << "Invalid time value: " << hours << ":" << minutes << endl;
+        cout << "Invalid time value: " << hours << ":" << minutes << endl;
         break; // Exit the loop if the time value is invalid
     }
 
@@ -330,3 +347,4 @@ for (int i = 0; i < 7; i++) {
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
+//https://stackoverflow.com/questions/11226143/formatting-output-in-c
