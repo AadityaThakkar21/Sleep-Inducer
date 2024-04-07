@@ -80,65 +80,6 @@ void generateRandomTime(Time& sleepTime) {
     sleepTime.set(randomInt(20, 22), randomInt(0, 59));
 }
 
-// void allocateEarpods(int Dorm[MAX_DORMS][MAX_INMATES_PER_DORM], int EarpodIDarray[], int musicIDarray[], int peopleperdorm) {
-//     int musicIDInmates[MAX_DORMS][MAX_INMATES_PER_DORM] = {0};
-//     int remainderInmates[MAX_DORMS] = {0};
-//     int dormIndex = 0;
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
-//             musicIDInmates[i][j] = -1;
-//         }
-//     }
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         remainderInmates[i] = -1;
-//     }
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
-//             Dorm[i][j] = -1;
-//         }
-//     }
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         int earpodID = EarpodIDarray[i];
-//         int musicID = musicIDarray[i];
-
-//         bool filled = false;
-
-//         for (size_t j = 0; j < peopleperdorm; ++j) {
-//             if (musicIDInmates[musicID][j] == -1) {
-//                 musicIDInmates[musicID][j] = earpodID;
-//                 filled = true;
-//                 break;
-//             }
-//         }
-
-//         if (!filled) {
-//             remainderInmates[dormIndex++] = earpodID;
-//         }
-//     }
-
-//     dormIndex = 0;
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         for (size_t j = 0; j < peopleperdorm; ++j) {
-//             if (musicIDInmates[i][j] != -1) {
-//                 Dorm[dormIndex][j] = musicIDInmates[i][j];
-//             }
-//         }
-//         ++dormIndex;
-//     }
-
-//     for (size_t i = 0; i < MAX_DORMS; ++i) {
-//         if (remainderInmates[i] != -1) {
-//             Dorm[dormIndex][0] = remainderInmates[i];
-//             ++dormIndex;
-//         }
-//     }
-// }
-
 void generateInmateRecords(int N) {
     ofstream outFile("Inmate_records.txt");
     if (!outFile) {
@@ -747,23 +688,3 @@ while (currentTime.isWithinRange() && !(currentTime.hours == 23 && currentTime.m
                 }
             }
         }
-        else if (musicPlaying[i] && Musicstop[i] >= currentTime) {
-            cout << "Music is currently playing for " << setw(9) << names[i] << endl;
-            musicStopped = false;
-        }
-    }
-
-    if (musicStopped) {
-        cout << "Music is not being played for anyone right now" << endl;
-    }
-
-    currentTime.incrementMinutes(incrementation);
-    PrevTime.incrementMinutes(incrementation);
-    cout << incrementation << " minutes have passed..." << endl;
-}
-
-
-    updateInmateRecords();
-    cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
-    return 0;
-}
