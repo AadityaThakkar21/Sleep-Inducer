@@ -178,11 +178,17 @@ void updateInmateRecords() {
 
 int main()
 {   
+int main()
+{   
     int N, M, incrementation, peopleperdorm, numberofchannels;
+
+    int Dorms[M][peopleperdorm];
+
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
     cin.ignore();
+    
     cout << "Enter number of Dorms:\n";
     cin >> M;
     cout << "You have kept " << M << " Dorms for inmates to stay." << endl;
