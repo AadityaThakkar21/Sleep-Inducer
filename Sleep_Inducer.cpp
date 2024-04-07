@@ -69,83 +69,68 @@ int randomInt(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 
-struct MusicChannel {
-    bool occupied;
-    int dormIndex;
-    int earpodID[100]; // Assuming a maximum of 100 earpod IDs per channel
-    int musicID;
-
-    MusicChannel() : occupied(false), dormIndex(-1), musicID(-1) {
-        // Initialize earpodID array with -1
-        for (int i = 0; i < 100; ++i) {
-            earpodID[i] = -1;
-        }
-    }
-};
-
-
 void generateRandomTime(Time& sleepTime) {
     sleepTime.set(randomInt(20, 22), randomInt(0, 59));
 }
 
-void allocateEarpods(int Dorm[MAX_DORMS][MAX_INMATES_PER_DORM], int EarpodIDarray[], int musicIDarray[], int peopleperdorm) {
-    int musicIDInmates[MAX_DORMS][MAX_INMATES_PER_DORM] = {0};
-    int remainderInmates[MAX_DORMS] = {0};
-    int dormIndex = 0;
+// void allocateEarpods(int Dorm[MAX_DORMS][MAX_INMATES_PER_DORM], int EarpodIDarray[], int musicIDarray[], int peopleperdorm) {
+//     int musicIDInmates[MAX_DORMS][MAX_INMATES_PER_DORM] = {0};
+//     int remainderInmates[MAX_DORMS] = {0};
+//     int dormIndex = 0;
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
-            musicIDInmates[i][j] = -1;
-        }
-    }
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
+//             musicIDInmates[i][j] = -1;
+//         }
+//     }
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        remainderInmates[i] = -1;
-    }
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         remainderInmates[i] = -1;
+//     }
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
-            Dorm[i][j] = -1;
-        }
-    }
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         for (size_t j = 0; j < MAX_INMATES_PER_DORM; ++j) {
+//             Dorm[i][j] = -1;
+//         }
+//     }
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        int earpodID = EarpodIDarray[i];
-        int musicID = musicIDarray[i];
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         int earpodID = EarpodIDarray[i];
+//         int musicID = musicIDarray[i];
 
-        bool filled = false;
+//         bool filled = false;
 
-        for (size_t j = 0; j < peopleperdorm; ++j) {
-            if (musicIDInmates[musicID][j] == -1) {
-                musicIDInmates[musicID][j] = earpodID;
-                filled = true;
-                break;
-            }
-        }
+//         for (size_t j = 0; j < peopleperdorm; ++j) {
+//             if (musicIDInmates[musicID][j] == -1) {
+//                 musicIDInmates[musicID][j] = earpodID;
+//                 filled = true;
+//                 break;
+//             }
+//         }
 
-        if (!filled) {
-            remainderInmates[dormIndex++] = earpodID;
-        }
-    }
+//         if (!filled) {
+//             remainderInmates[dormIndex++] = earpodID;
+//         }
+//     }
 
-    dormIndex = 0;
+//     dormIndex = 0;
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        for (size_t j = 0; j < peopleperdorm; ++j) {
-            if (musicIDInmates[i][j] != -1) {
-                Dorm[dormIndex][j] = musicIDInmates[i][j];
-            }
-        }
-        ++dormIndex;
-    }
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         for (size_t j = 0; j < peopleperdorm; ++j) {
+//             if (musicIDInmates[i][j] != -1) {
+//                 Dorm[dormIndex][j] = musicIDInmates[i][j];
+//             }
+//         }
+//         ++dormIndex;
+//     }
 
-    for (size_t i = 0; i < MAX_DORMS; ++i) {
-        if (remainderInmates[i] != -1) {
-            Dorm[dormIndex][0] = remainderInmates[i];
-            ++dormIndex;
-        }
-    }
-}
+//     for (size_t i = 0; i < MAX_DORMS; ++i) {
+//         if (remainderInmates[i] != -1) {
+//             Dorm[dormIndex][0] = remainderInmates[i];
+//             ++dormIndex;
+//         }
+//     }
+// }
 
 void generateInmateRecords(int N) {
     ofstream outFile("Inmate_records.txt");
@@ -228,10 +213,6 @@ void generateDormRecords(int M, int numberofchannels) {
     outFile.close();
 }
 
-void freeChannel(int channel) {
-    cout << "Music Channel " << channel + 10 << " has become free." << endl;
-}
-
 void updateInmateRecords() {
     ifstream inFile("Inmate_records.txt");
     if (!inFile) {
@@ -297,16 +278,40 @@ outFile<< sleepTime.hours<<":";
     outFile.close();
 }
 
-void printNamesAndEarpodIDs(const string names[], const int earpodIDarray[], int N) {
-    cout << "Here is the list of Names and their respective EarpodID:" << endl;
-    for (int i = 0; i < N; i++) {
-        cout << names[i] << ": " << earpodIDarray[i] << endl;
-    }
-}
+// void printNamesAndEarpodIDs(const string names[], const int earpodIDarray[], int N) {
+//     cout << "Here is the list of Names and their respective EarpodID:" << endl;
+//     for (int i = 0; i < N; i++) {
+//         cout << names[i] << ": " << earpodIDarray[i] << endl;
+//     }
+// }
+    
+    struct Record {
+    string name;
+    int EarpodID;
+    int MusicID;
+    int Dorm;
+};
+struct MusicChannel {
+    bool occupied;
+    int dormIndex;
+    int earpodID[100]; // Assuming a maximum of 100 earpod IDs per channel
+    int musicID;
 
+    MusicChannel() : occupied(false), dormIndex(-1), musicID(-1) {
+        // Initialize earpodID array with -1
+        for (int i = 0; i < 100; ++i) {
+            earpodID[i] = -1;
+        }
+    }
+};
 int main() {
     int N, M, incrementation, peopleperdorm, numberofchannels;
-
+  vector<string> DormName;
+    vector<int> ChannelIDrecord;
+    
+    int Channelsize = ChannelIDrecord.size();
+    vector<vector<int>> ChannelID(Channelsize, vector<int>(peopleperdorm));
+    vector<int> MusicID;
     cout << "Enter number of inmates:\n";
     cin >> N;
     cout << "You have stated there are " << N << " inmates." << endl;
@@ -341,18 +346,15 @@ int main() {
            return 0;
        }
     }
-    vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
+    // vector<vector<int>> Dorms(M, vector<int>(peopleperdorm));
     
     cout << "Enter number of channels:\n";
     cin >> numberofchannels;
     cout << "You have set " << numberofchannels << " channels." << endl;
     cin.ignore();
     
-    vector<string> DormName;
-    vector<int> ChannelIDrecord;
-    int Channelsize = ChannelIDrecord.size();
-    MusicChannel MusicChannels[Channelsize];
-    vector<int> MusicID;
+    int BackupChannels;
+    int BackupEarpodID[];
     string names[N];
     Time times[N];
     int Parray[N];
@@ -562,37 +564,73 @@ int main() {
     }
     int Noofpeopleperdorm = N / M;
 int RemainingNoofpeopleperdorm = N % M;
-
-Dorms[M][Noofpeopleperdorm];
-int dormIndex = 0;
-int storing = 0;
-
-// Allocate earpod IDs to Dorms[M][peopleperdorm]
-for (int i = 0; i < N; i++) {
-    Dorms[dormIndex][storing++] = earpodIDarray[i];
-    if (storing == Noofpeopleperdorm) {
-        dormIndex++;
-        storing = 0;
-    }
-}
-
-    // Allocate remaining earpod IDs if there are fewer people left than Noofpeopleperdorm
-    int Remainingpeopleleft = N - (Noofpeopleperdorm * M);
-    if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
-    for (int i = 0; i < M && Remainingpeopleleft < RemainingNoofpeopleperdorm; i++) {
-        Dorms[i][Noofpeopleperdorm] = earpodIDarray[N - RemainingNoofpeopleperdorm + Remainingpeopleleft];
-        Remainingpeopleleft++;
-    }
-    }
-    printNamesAndEarpodIDs(names, earpodIDarray, N);
     
+// vector<vector<int>> Dorms(M, vector<int>(Noofpeopleperdorm));
+// Dorms[M][Noofpeopleperdorm];
+// int dormIndex = 0;
+// int storing = 0;
+
+// // Allocate earpod IDs to Dorms[M][peopleperdorm]
+// for (int i = 0; i < N; i++) {
+//     Dorms[dormIndex][storing++] = earpodIDarray[i];
+//     if (storing == Noofpeopleperdorm) {
+//         dormIndex++;
+//         storing = 0;
+//     }
+// }
+
+    // // Allocate remaining earpod IDs if there are fewer people left than Noofpeopleperdorm
+    // int Remainingpeopleleft = N - (Noofpeopleperdorm * M);
+    // if (Remainingpeopleleft < RemainingNoofpeopleperdorm) {
+    // for (int i = 0; i < M && Remainingpeopleleft < RemainingNoofpeopleperdorm; i++) {
+    //     Dorms[i][Noofpeopleperdorm] = earpodIDarray[N - RemainingNoofpeopleperdorm + Remainingpeopleleft];
+    //     Remainingpeopleleft++;
+    // }
+    // }
+    // printNamesAndEarpodIDs(names, earpodIDarray, N);
     // int Dorms[M][Noofpeopleperdorm];
-    
-    for(int i=0;i<N;i++){
-        for(int j;j<N;j++){
+    // for(int i=0;i<N;i++){
+    //     for(int j;j<N;j++){
             
+    //     }
+    // }
+    int Dorm[M][Noofpeopleperdorm];
+    int DormIDarray[sizeof(earpodIDarray)/sizeof(earpodIDarray[0])]; // Assuming DormIDarray has the same size as earpodIDarray
+
+    // Initialize DormIDarray with -1
+    for (int i = 0; i < sizeof(DormIDarray)/sizeof(DormIDarray[0]); ++i) {
+        DormIDarray[i] = -1;
+    }
+
+    // Search for each earpodID in Dorm and store the dormitory index in DormIDarray
+    for (int i = 0; i < sizeof(earpodIDarray)/sizeof(earpodIDarray[0]); ++i) {
+        int earpodID = earpodIDarray[i];
+        for (int j = 0; j < MAX_DORMS; ++j) {
+            for (int k = 0; k < MAX_INMATES_PER_DORM; ++k) {
+                if (Dorm[j][k] == earpodID) {
+                    DormIDarray[i] = j;
+                    break;
+                }
+            }
+            if (DormIDarray[i] != -1) {
+                break;
+            }
         }
     }
+    struct Record Records[N];
+    MusicChannel ChannelControl[Channelsize];
+    for (int i = 0; i < N; ++i) {
+        Records[i].name = names[i];
+        Records[i].EarpodID = earpodIDarray[i];
+        Records[i].MusicID = musicIDarray[i];
+        Records[i].Dorm = DormIDarray[i];
+    }
+    
+    
+    
+    
+    
+    
     cout << "\nTime taken by each inmate to fall asleep are:" << endl;
     for (int i = 0; i < N; i++) {
         cout << setw(10)<<names[i] << ": " << Parray[i] << " minutes" << endl;
@@ -613,103 +651,83 @@ bool musicStopped[N] = {true};
 Time currentTime(20, 0);
 Time PrevTime(19, 30);
 
-    while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+    // while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
+    //     cout << "\nCurrently the time is:";
+    //     currentTime.printTime();
+    //     cout << endl;
+
+    //     bool musicCurrentlyPlaying = false; // Flag to track if music is currently playing
+
+    //     // Free channels if no EarpodID is using them
+    //     for (int dorm = 0; dorm < M; dorm++) {
+    //         for (int person = 0; person < peopleperdorm; person++) {
+    //             if (ChannelID[dorm][person] != -1) {
+    //                 // Check if EarpodID is still using the channel, if not free the channel
+    //                 bool earpodIDUsingChannel = false;
+    //                 for (int i = 0; i < N; i++) {
+    //                     if (ChannelID[dorm][person] == i) {
+    //                         earpodIDUsingChannel = true;
+    //                         break;
+    //                     }
+    //                 }
+    //                 if (!earpodIDUsingChannel) {
+    //                     cout << "Music Channel " << ChannelID[dorm][person] + 10 << " has become free." << endl;
+    //                     ChannelID[dorm][person] = -1; // Clear the channel allocation
+    //                 }
+    //             }
+    //         }
+        // }
+          while (currentTime.isWithinRange() && !currentTime.isMidnight()) {
         cout << "\nCurrently the time is:";
-        currentTime.printTime();
+                    currentTime.printTime();
+int check=0;
         cout << endl;
 
-        bool musicCurrentlyPlaying = false; // Flag to track if music is currently playing
-
-        // Free channels if no EarpodID is using them
-        for (int dorm = 0; dorm < M; dorm++) {
-            for (int person = 0; person < peopleperdorm; person++) {
-                if (ChannelID[dorm][person] != -1) {
-                    // Check if EarpodID is still using the channel, if not free the channel
-                    bool earpodIDUsingChannel = false;
-                    for (int i = 0; i < N; i++) {
-                        if (ChannelID[dorm][person] == i) {
-                            earpodIDUsingChannel = true;
-                            break;
-                        }
-                    }
-                    if (!earpodIDUsingChannel) {
-                        freeChannel(ChannelID[dorm][person]);
-                        ChannelID[dorm][person] = -1; // Clear the channel allocation
-                    }
-                }
-            }
-        }
+        // musicStopped = true;
 
         for (int i = 0; i < N; i++) {
-            // Check if music has stopped playing
-            if (musicPlaying[i] && currentTime >= Musicstop[i]) {
-                cout << "Music has stopped playing for " << setw(10) << names[i] << " at ";
+            
+            
+            if ((musicPlaying[i]) &&( currentTime >= Musicstop[i]) ) {
+                cout << "Music has stopped playing for " <<setw(10)<< names[i] << " at ";
                 Musicstop[i].printTime();
                 cout << endl;
                 musicPlaying[i] = false;
                 musicStopped[i] = true;
-
-                // Free the music channel if no EarpodID is using it
-                for (int j = 0; j < Channelsize; j++) {
-                    for (int k = 0; k < peopleperdorm; k++) {
-                        if (ChannelID[j][k] == i) {
-                            freeChannel(j);
-                            ChannelID[j][k] = -1; // Clear the channel allocation
-                        }
-                    }
-                }
             }
-
+            
             if (!musicPlaying[i]) {
                 musicStopped[i] = false;
             }
-
-            if ((currentTime >= times[i]) && (!musicPlaying[i]) && (times[i] >= PrevTime)) {
-                cout << right;
-                cout << "Music has started playing for " << setw(10) << names[i] << " at ";
+            if ((currentTime >= times[i]) && (!musicPlaying[i])  && (times[i]>= PrevTime)  ) {
+                cout<<right;
+                cout << "Music has started playing for " <<setw(10)<< names[i] << " at ";
                 times[i].printTime();
                 cout << endl;
                 musicPlaying[i] = true;
                 musicStopped[i] = false;
-                musicCurrentlyPlaying = true; // Set the flag when music starts playing
-
-                // Allocate a music channel dynamically
-                for (int channel = 0; channel < Channelsize; channel++) {
-                    bool channelEmpty = true;
-                    for (int j = 0; j < peopleperdorm; j++) {
-                        if (ChannelID[channel][j] != -1) {
-                            channelEmpty = false;
-                            break;
-                        }
-                    }
-                    if (channelEmpty) {
-                        ChannelID[channel][i % peopleperdorm] = i; // Allocate the channel to the dorm
-                        cout << "Music Channel " << channel + 10 << " has been allocated for EarpodID " << earpodIDarray[i] << " with MusicID " << musicIDarray[i] << endl;
-                        break;
-                    }
-                }
-            } else if (musicPlaying[i] && (Musicstop[i] >= currentTime)) {
-                cout << "Music is currently playing for " << setw(9) << names[i] << endl;
-                musicCurrentlyPlaying = true; // Set the flag when music is playing
+            }
+            else if(musicPlaying[i]&& (Musicstop[i]>=currentTime)) {
+                cout << "Music is currently playing for " <<setw(9)<< names[i] << endl;
             }
         }
-
-        int check = 0;
-        for (int i = 0; i < N; i++) {
-            if (musicStopped[i]) {
+        for(int i=0;i<N;i++){
+            if(musicStopped[i]){
                 check++;
             }
         }
 
-        if (!musicCurrentlyPlaying) { // Print only when no music is currently playing
-            cout << "Music is not being played for anyone right now" << endl;
-            cout << "Currently No Music channels is being utilized" << endl;
-        }
+                if (check==N) {
+                   cout << "Music is not being played for anyone right now" << endl;
+                }
+
+
 
         currentTime.incrementMinutes(incrementation);
         PrevTime.incrementMinutes(incrementation);
-        cout << incrementation << " minutes have passed..." << endl;
+        cout << incrementation<<" minutes have passed..." << endl;
     }
+
 
     updateInmateRecords();
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
