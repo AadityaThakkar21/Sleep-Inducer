@@ -241,6 +241,9 @@ int main()
     cout << "You have set " << numberofchannels << " channels." << endl;
     cin.ignore();
     
+    vector<string> DormName;
+    vector<int> ChannelID;
+    vector<int> MusicID;
     string names[N];
     Time times[N]; // Array to store average sleep times for each inmate
     int Parray[N]; // Array to store P values for each inmate
@@ -348,6 +351,51 @@ for (int i = 0; i < 7; i++) {
             idx++;
         }
         MyReadFile.close();
+        
+            ifstream inFile("Dorm_records.txt");
+    if (!inFile) {
+        cerr << "Error opening input file." << endl;
+        return 1;
+    }
+
+    string line;
+    if (getline(inFile, line)) {
+        stringstream ss(line);
+        string dormName;
+        while (ss >> dormName) {
+            DormName.push_back(dormName);
+        }
+    } else {
+        cerr << "Error: Empty file." << endl;
+        inFile.close();
+        return 1;
+    }
+
+    if (getline(inFile, line)) {
+        stringstream ss(line);
+        int channel;
+        while (ss >> channel) {
+            ChannelID.push_back(channel);
+        }
+    } else {
+        cerr << "Error: Incomplete file." << endl;
+        inFile.close();
+        return 1;
+    }
+
+    if (getline(inFile, line)) {
+        stringstream ss(line);
+        int music;
+        while (ss >> music) {
+            MusicID.push_back(music);
+        }
+    } else {
+        cerr << "Error: Incomplete file." << endl;
+        inFile.close();
+        return 1;
+    }
+
+    inFile.close();
 
         // Now 'times' array contains the average sleep times for each inmate
         cout << "There are currently " << N << " inmates in " << M << " dorms" << endl;
@@ -374,6 +422,22 @@ for (int i = 0; i < 7; i++) {
     }
     else {
         cout << "Unable to open file";
+    }
+    
+        // Display the read data
+    cout << "Dorm Names:" << endl;
+    for (const string& dorm : DormName) {
+        cout << dorm << endl;
+    }
+
+    cout << "\nChannel IDs:" << endl;
+    for (int channel : ChannelID) {
+        cout << channel << endl;
+    }
+
+    cout << "\nMusic IDs:" << endl;
+    for (int music : MusicID) {
+        cout << music << endl;
     }
 
         Time currentTime(20, 0);
@@ -422,4 +486,3 @@ for (int i = 0; i < 7; i++) {
     cout << "Inmate records updated and saved to 'Inmate_records_updated.txt'." << endl;
     return 0;
 }
-//https://stackoverflow.com/questions/11226143/formatting-output-in-c
