@@ -823,3 +823,8 @@ The Sleep Inducer System is a collaborative effort, and we extend our gratitude 
    Rishik Yalamanchili , 
     Lingampalli Venkata Subramanyam ,  
 	Aaditya Thakkar.
+
+## References
+
+- https://www.geeksforgeeks.org/
+- Resource center of DAIICT
